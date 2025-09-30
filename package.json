@@ -1,0 +1,37 @@
+{
+  "name": "kallbad-trip",
+  "version": "1.0.0",
+  "description": "web API to find every place where you can take a dip in Sweden",
+  "main": "index.js",
+  "scripts": {
+    "setup": "npm install && npm run doc && npm run updatedb",
+    "updatedb": "node src/util/updatedb.js",
+    "doc": "node src/util/swagger.js",
+    "dev": "npm run doc && npx nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugo66297/Kallbad-Trip.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hugo66297/Kallbad-Trip/issues"
+  },
+  "homepage": "https://github.com/hugo66297/Kallbad-Trip#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jws": "^4.0.0",
+    "mandatoryenv": "^3.0.4",
+    "morgan": "^1.10.1",
+    "path": "^0.12.7",
+    "rotating-file-stream": "^3.2.7",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

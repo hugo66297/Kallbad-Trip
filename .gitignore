@@ -7,4 +7,9 @@ logs
 npm-debug.log*
 
 # Environment variables
-.env*
+.env
+.env.local
+.env.*.local
+
+# Keep .env.example (template for collaborators)
+!.env.example

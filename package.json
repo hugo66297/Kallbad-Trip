@@ -4,10 +4,13 @@
   "description": "web API to find every place where you can take a dip in Sweden",
   "main": "index.js",
   "scripts": {
-    "setup": "npm install && npm run doc && npm run updatedb",
-    "updatedb": "node src/util/updatedb.js",
+    "setup": "npm install && npm run doc",
+    "db:init": "node src/database/init.js",
+    "db:reset": "node src/database/reset.js",
+    "db:test": "node src/database/test-connection.js",
     "doc": "node src/util/swagger.js",
     "dev": "npm run doc && npx nodemon src/server.js",
+    "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,5 +36,8 @@
     "rotating-file-stream": "^3.2.7",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

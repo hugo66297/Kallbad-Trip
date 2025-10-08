@@ -1,5 +1,44 @@
 # Database - Kallbad Trip
 
+## Setup (First Time)
+
+1. **Install PostgreSQL** (if not already installed)
+   - Download from https://www.postgresql.org/download/
+   - Default user is `postgres`
+
+2. **Create the database**
+   ```bash
+   # Via command line
+   createdb -U postgres kallbad_trip
+   
+   # Or via pgAdmin4
+   # Right-click "Databases" → Create → Database
+   # Name: kallbad_trip
+   ```
+
+3. **Configure connection**
+   - Copy `.env.example` to `.env` (if exists)
+   - Or create `.env` with these values:
+   ```env
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=kallbad_trip
+   DB_USER=postgres
+   DB_PASSWORD=your_password_here
+   ```
+
+4. **Initialize database**
+   ```bash
+   npm run db:init
+   ```
+
+5. **Verify it works**
+   ```bash
+   npm run db:test
+   ```
+
+Done! You can now start the server with `npm run dev`.
+
 ## Files
 
 - `schema.sql` - Complete database schema
@@ -50,17 +89,6 @@ npm run db:reset
 |-------|-------------------|----------|
 | Admin | admin@kallbad.se  | admin123 |
 | User  | user@kallbad.se   | user123  |
-
-## Configuration
-
-Set in `.env`:
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=kallbad_trip
-DB_USER=postgres
-DB_PASSWORD=postgres
-```
 
 ## Troubleshooting
 

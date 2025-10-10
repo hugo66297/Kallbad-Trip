@@ -42,4 +42,6 @@ router.get('/bathing-waters/:id/results', bathingWatersController.getBathingWate
  */
 router.get('/forecasts', bathingWatersController.getForecast);
 
+router.use(require('./user.js'));
+
 module.exports = router;

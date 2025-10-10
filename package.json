@@ -27,12 +27,14 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jws": "^4.0.0",
     "mandatoryenv": "^3.0.4",
     "morgan": "^1.10.1",
     "path": "^0.12.7",
+    "pg": "^8.16.3",
     "rotating-file-stream": "^3.2.7",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"

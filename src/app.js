@@ -56,4 +56,18 @@ app.use((err, req, res, next) => {
     next(err);
 });
 app.use(errorHandler());
+const helmet = require("helmet");
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://unpkg.com"],
+      styleSrc: ["'self'", "https://unpkg.com"],
+      imgSrc: ["'self'", "data:", "https://*.tile.openstreetmap.org"],
+    },
+  })
+);
+
+
 module.exports = app;

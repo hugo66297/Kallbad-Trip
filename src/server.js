@@ -6,18 +6,24 @@ const { PORT } = process.env;
 
 const app = require('./app');
 
-// Test de connexion à la base de données au démarrage
+// Database connection test on startup
 testConnection()
     .then(() => {
+        console.log('✅ Database connected');
+    })
+    .catch((error) => {
+        console.warn('⚠️  Database unavailable:', error.message);
+        console.warn('⚠️  Server starting anyway (external API only)');
+    })
+    .finally(() => {
         const server = http.createServer(app);
         
         server.listen(
             PORT,
-            () => console.info('🚀 Serveur démarré sur le port', PORT)
+            () => {
+                console.info('🚀 Server started on port', PORT);
+                console.info('📡 Bathing Waters API available at http://localhost:' + PORT + '/api');
+                console.info('📖 Swagger documentation available at http://localhost:' + PORT + '/doc');
+            }
         );
-    })
-    .catch((error) => {
-        console.error('❌ Impossible de démarrer le serveur:', error.message);
-        console.error('⚠️  Vérifiez la configuration de la base de données dans .env');
-        process.exit(1);
     });

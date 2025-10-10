@@ -48,14 +48,30 @@ src/
 - `npm run db:test` - Check connection
 
 See `src/database/README.md` for database details.
+See `API_GUIDE.md` for complete API documentation.
 
 ## Features
 
-- Search bathing sites in Sweden (HaV API)
+- **4,352 bathing sites** from Swedish Marine and Water Authority (HaV)
+- Real-time water quality and temperature data
+- Site profiles with seasonal information and classifications
+- Water temperature forecasts
 - User reviews and ratings
 - Visit tracking
 - Admin moderation
 - User authentication
+
+## API Endpoints
+
+**Bathing Waters (External HaV API):**
+- `GET /api/bathing-waters` - All active bathing sites
+- `GET /api/bathing-waters/:id` - Specific site details
+- `GET /api/bathing-waters/:id/profile` - Complete site profile
+- `GET /api/bathing-waters/:id/results` - Water quality monitoring results
+- `GET /api/forecasts` - Water temperature forecasts
+- `GET /api/health` - API health check
+
+📖 See [API_GUIDE.md](./API_GUIDE.md) for detailed documentation
 
 ## Tech Stack
 

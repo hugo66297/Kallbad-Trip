@@ -4,11 +4,17 @@ const user = require('../controllers/user.js');
 //const verifyMiddleware = require('../middlewares/verify.js');
 //const authMiddleware = require('../middlewares/auth.js');
 
-//router.use('/users', authMiddleware.verifyTokenPresence);
-//router.use('/user', authMiddleware.verifyTokenPresence);
-//router.use('/user/:id',verifyMiddleware.verifyID);
 
-//router.use('/register', authMiddleware.verifyTokenPresence, authMiddleware.verifyTokenAdmin);
+router.use('/logout', authMiddleware.verifyTokenPresence);
+router.use('/user/:id',authMiddleware.verifyTokenPresence, verifyMiddleware.verifyID);
+
+router.post('/register', user.register);
+router.post('/login',user.login);
+router.get('/logout',user.logout);
+
+router.get('/user/:id', user.getUser);
+router.put('/user/:id', user.getUser);
+router.delete('/user/:id', user.getUser);
 
 
 module.exports = router;

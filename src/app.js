@@ -47,4 +47,18 @@ app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/index.html'));
 });
 
+const helmet = require("helmet");
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://unpkg.com"],
+      styleSrc: ["'self'", "https://unpkg.com"],
+      imgSrc: ["'self'", "data:", "https://*.tile.openstreetmap.org"],
+    },
+  })
+);
+
+
 module.exports = app;

@@ -1,0 +1,23 @@
+body{
+    margin:0;
+    padding:0;
+    background-color:rgb(220, 219, 219);
+}
+
+div{
+    background-color: rgb(2, 99, 179);
+    margin:0;
+
+}
+
+div h1{
+    font-family: 'Arial', sans-serif;
+    color: rgba(201, 171, 50);
+    font-weight: bold;
+    padding-left: 2rem;
+    margin:0;
+}
+
+.map{
+    height: 200px;
+}

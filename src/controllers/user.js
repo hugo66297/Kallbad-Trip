@@ -14,10 +14,10 @@ module.exports = {
         //#swagger.tags = ['Users']
         //#swagger.summary = 'Endpoint to create an account'
         //#swagger.parameters['obj'] = { in: 'body', description: 'username, email and password', required: true, schema: { $username: 'Hugo', $email:'kalbad@gmail.com', $password: 'Password1234!'}}
-        if(!has(req.body,['username','email','password'])) throw new CodeError('Bad request', status.BAD_REQUEST);
+        if(!has(req.body,['username','email','password'])) throw new CodeError('username, email and password are required', status.UNAUTHORIZED);
         const {username, email, password} = req.body;
-        if(username === '' || email === '' || password === '') throw new CodeError('Bad request', status.BAD_REQUEST);
-        if(!validPassword(password)) throw new CodeError('Bad request', status.BAD_REQUEST);
+        if(username === '' || email === '' || password === '') throw new CodeError('You need to specify username, email and password', status.BAD_REQUEST);
+        if(!validPassword(password)) throw new CodeError('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character', status.BAD_REQUEST);
 
         // Create user
 

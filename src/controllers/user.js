@@ -16,7 +16,7 @@ function validPassword (password){
 module.exports = {
     async register(req,res){
         //#swagger.tags = ['Users']
-        //#swagger.summary = 'Endpoint to create an account'
+        //#swagger.summary = 'Endpoint to create an account you canq add firstname and lastname optionally'
         //#swagger.parameters['obj'] = { in: 'body', description: 'username, email and password', required: true, schema: { $username: 'Hugo', $email:'kalbad@gmail.com', $password: 'Password1234!'}}
         if(!has(req.body,['username','email','password'])) throw new CodeError('username, email and password are required', status.UNAUTHORIZED);
         const {username, email, password, firstName, lastName} = req.body;
@@ -79,6 +79,6 @@ module.exports = {
 
         res.clearCookie('authToken');
         res.json({status:true, message:'User logged out'});
-        
+
     }
 }

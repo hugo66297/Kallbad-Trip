@@ -40,5 +40,12 @@ app.use('/api', (req, res) => {
         .json({ status: false, message: 'Endpoint Not Found' })
 });
 
+//Serve static files
+app.use(express.static('src/frontend'));
+
+//Root route
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/frontend/index.html');
+});
 
 module.exports = app;

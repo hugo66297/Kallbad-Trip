@@ -23,22 +23,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(logger.dev, logger.combined);
 app.use(cookieParser());
 app.use(cors());
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-            scriptSrcAttr: ["'unsafe-inline'"],
-            imgSrc: ["'self'", "data:", "https:", "http:"],
-            connectSrc: ["'self'"],
-            fontSrc: ["'self'", "https:", "data:"],
-            objectSrc: ["'none'"],
-            mediaSrc: ["'self'"],
-            frameSrc: ["'none'"],
-        },
-    },
-}));
+app.use(helmet());
 
 //Swagger Configuration & Documentation
 if (process.env.NODE_ENV == 'dev') {
@@ -57,11 +42,6 @@ app.use('/api', (req, res) => {
         .json({ status: false, message: 'Endpoint Not Found' })
 });
 
-//Routes to serve the frontend
-app.use(express.static(path.join(__dirname, 'frontend')));
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/index.html'));
-});
 
 //errorHadler
 app.use((err, req, res, next) => {

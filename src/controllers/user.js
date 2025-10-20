@@ -69,6 +69,7 @@ module.exports = {
                 sameSite: 'Strict'
             });
 
+            db.query('UPDATE users SET last_login = NOW() WHERE username = $1', [user.username]);
             res.json({status:true, message: "login successful", data:token});
             return;
         } throw new CodeError("Wrong password", status.UNAUTHORIZED);

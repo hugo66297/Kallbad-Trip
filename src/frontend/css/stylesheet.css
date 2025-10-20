@@ -1,23 +1,32 @@
 body{
     margin:0;
     padding:0;
-    background-color:rgb(220, 219, 219);
+    background-color: rgb(220, 219, 219);
+    font-family: Arial, sans-serif;
 }
 
-div{
+/* Header specific style (do not style all divs globally) */
+.site-header{
     background-color: rgb(2, 99, 179);
-    margin:0;
-
+    margin: 0;
+    padding: 1rem 0;
 }
 
-div h1{
-    font-family: 'Arial', sans-serif;
+.site-header h1{
     color: rgba(201, 171, 50);
     font-weight: bold;
     padding-left: 2rem;
-    margin:0;
+    margin: 0;
 }
 
-.map{
-    height: 200px;
+/* Map container must have an explicit height for Leaflet to render */
+#map{
+    height: 50vh; /* responsive: 50% of viewport height */
+    width: 70%;
+    box-sizing: border-box;
+}
+
+/* Small screens: ensure map remains usable */
+@media (max-width: 600px) {
+  #map{ height: 50vh; }
 }

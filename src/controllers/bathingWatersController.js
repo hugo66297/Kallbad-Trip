@@ -4,11 +4,9 @@
 
 const bathingWatersService = require('../services/bathingWatersService');
 
-/**
- * GET /api/bathing-waters
- * Retrieves all active bathing sites
- */
 async function getAllBathingWaters(req, res) {
+    //#swagger.tags = ['Bathing Waters']
+    //#swagger.summary = 'Retrieves all active bathing sites'
     try {
         const data = await bathingWatersService.getAllBathingWaters();
         res.json({
@@ -24,11 +22,9 @@ async function getAllBathingWaters(req, res) {
     }
 }
 
-/**
- * GET /api/bathing-waters/:id
- * Retrieves a specific bathing site
- */
 async function getBathingWaterById(req, res) {
+    //#swagger.tags = ['Bathing Waters']
+    //#swagger.summary = 'Retrieves a specific bathing site by its ID'
     try {
         const { id } = req.params;
         
@@ -56,11 +52,9 @@ async function getBathingWaterById(req, res) {
     }
 }
 
-/**
- * GET /api/bathing-waters/:id/profile
- * Retrieves the profile of a bathing site
- */
 async function getBathingWaterProfile(req, res) {
+    //#swagger.tags = ['Bathing Waters']
+    //#swagger.summary = 'Retrieves the profile of a bathing site'
     try {
         const { id } = req.params;
         const data = await bathingWatersService.getBathingWaterProfile(id);
@@ -78,11 +72,9 @@ async function getBathingWaterProfile(req, res) {
     }
 }
 
-/**
- * GET /api/bathing-waters/:id/results
- * Retrieves the monitoring results of a site
- */
 async function getBathingWaterResults(req, res) {
+    //#swagger.tags = ['Bathing Waters']
+    //#swagger.summary = 'Retrieves the monitoring results of a bathing site'
     try {
         const { id } = req.params;
         const data = await bathingWatersService.getBathingWaterResults(id);
@@ -100,11 +92,9 @@ async function getBathingWaterResults(req, res) {
     }
 }
 
-/**
- * GET /api/forecasts
- * Retrieves water temperature forecasts
- */
 async function getForecast(req, res) {
+    //#swagger.tags = ['Bathing Waters']
+    //#swagger.summary = 'Retrieves water temperature forecasts'
     try {
         const { bathingWaterId, municId, municName } = req.query;
         const filters = {
@@ -127,11 +117,9 @@ async function getForecast(req, res) {
     }
 }
 
-/**
- * GET /api/health
- * Checks the external API health status
- */
 async function checkApiHealth(req, res) {
+    //#swagger.tags = ['Bathing Waters']
+    //#swagger.summary = 'Checks the external API health status'
     try {
         const data = await bathingWatersService.checkApiHealth();
         res.json({

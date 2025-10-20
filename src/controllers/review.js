@@ -12,7 +12,7 @@ module.exports = {
         const locationID = req.params.lid;
 
         //get all reviews from locationID
-        const reviews = await db.query(`SELECT r.user_id, r.rating, r.review_text, r.created_at FROM reviews r WHERE r.site_api_id = $1`, [locationID]);
+        const reviews = await db.query(`SELECT r.id, r.user_id, r.rating, r.review_text, r.created_at FROM reviews r WHERE r.site_api_id = $1`, [locationID]);
 
         res.json({status:true, message:'Get all reviews from location', data: reviews.rows});
     },
@@ -44,6 +44,20 @@ module.exports = {
 
         res.json({status:true, message:'Review added'});
     },
-    async modifyReview(req,res){},
-    async deleteReview(req,res){}
+    async modifyReview(req,res){
+        //#swagger.tags = ['Reviews']
+        //#swagger.summary = 'Endpoint to modify a review'
+        //#swagger.parameters['obj'] = { in: 'body', description: 'you can change rating and review_text', required: true, schema: { $rating: 2, $review_text: 'too bad bro !' }}
+
+        res.json({status:true, message:'Review modified'});
+    },
+    async deleteReview(req,res){
+        //#swagger.tags = ['Reviews']
+        //#swagger.summary = 'Endpoint to delete a review'
+        const reviewID = req.params.id;
+        const delR =  await db.query(`DELETE FROM reviews WHERE id = $1`, [reviewID]);
+        if(!delR) throw new CodeError('could not delete review', status.INTERNAL_SERVER_ERROR);
+
+        res.json({status:true, message:'Review deleted'});
+    }
 }

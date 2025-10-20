@@ -161,27 +161,20 @@ module.exports = {
     async deleteUser(req,res){
         //#swagger.tags = ['Users']
         //#swagger.summary = 'Endpoint to delete your account'
-        //#swagger.parameters['obj'] = { in: 'body', description: 'email and password', required: true, schema: { $email:'kalbad@gmail.com', $password: 'Password1234!'}}
         const token = req.cookies.authToken;
         const login = JSON.parse(jws.decode(token).payload);
-        const { email, password } = req.body;
-        if(!has(req.body,['email','password'])) throw new CodeError('email and password are required', status.BAD_REQUEST);
-        if(email == '' || password == '') throw new CodeError('email or password cannot be empty', status.BAD_REQUEST);
+        
         //check if user exists
         const u = await db.query(
             `SELECT * FROM users WHERE email = $1`, [login.email]
         );
         const user = u.rows[0];
         if(!user) throw new CodeError('user does not exist', status.BAD_REQUEST);
-        //check if password is correct
-        if(await bcrypt.compare(password, user.password_hash)){
-            const deletedUser = await db.query(
-                `DELETE FROM users WHERE id = $1`, [user.id]
-            );
-            res.clearCookie('authToken');
-            res.json({status:true, message:'User deleted'});
-            return;
-        } throw new CodeError("Wrong password", status.UNAUTHORIZED);
 
+        const deletedUser = await db.query(`DELETE FROM users WHERE id = $1`, [user.id]);
+        
+        res.clearCookie('authToken');
+        
+        res.json({status:true, message:'User deleted'});
     }
 }

@@ -5,11 +5,13 @@ const review = require('../controllers/review.js');
 const authMiddleware = require('../middlewares/auth.js');
 const verifyMiddleware = require('../middlewares/verify.js');
 
-router.use('/review/:id',verifyMiddleware.verifyID);
+router.use('/locations/:lid/reviews', verifyMiddleware.verifyID);
+router.use('/review/:id',authMiddleware.verifyTokenPresence, verifyMiddleware.verifyID);
 
-router.get('/review/:id', review.getReview);
-router.post('/review/:id', authMiddleware.verifyTokenPresence, review.addReview);
-router.put('/review/:id', authMiddleware.verifyTokenPresence, review.modifyReview);
-router.delete('/review/:id', authMiddleware.verifyTokenPresence, review.deleteReview);
+router.get('/locations/:lid/reviews', review.getReview);
+router.post('/locations/:lid/reviews', authMiddleware.verifyTokenPresence, review.addReview);
+
+router.put('/review/:id', review.modifyReview);
+router.delete('/review/:id', review.deleteReview);
 
 module.exports = router;

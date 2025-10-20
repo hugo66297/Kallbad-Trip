@@ -49,6 +49,18 @@ module.exports = {
         //#swagger.summary = 'Endpoint to modify a review'
         //#swagger.parameters['obj'] = { in: 'body', description: 'you can change rating and review_text', required: true, schema: { $rating: 2, $review_text: 'too bad bro !' }}
 
+        const reviewID = req.params.id;
+        const { rating, review_text } = req.body;
+
+        if(!has(req.body,['rating','review_text'])) throw new CodeError('rating and review_text are required', status.BAD_REQUEST);
+        if(rating === '' || review_text === '') throw new CodeError('rating and review_text must not be empty', status.BAD_REQUEST);
+
+        if(rating < 1 || rating > 5) throw new CodeError('rating must be between 1 and 5', status.BAD_REQUEST);
+        if(review_text.length > 500) throw new CodeError('review_text must be less than 500 characters', status.BAD_REQUEST);
+
+        const modifiedReview = await db.query(`UPDATE reviews SET rating = $1, review_text = $2, updated_at = NOW() WHERE id = $3`, [rating, review_text, reviewID]);
+        if(!modifiedReview) throw new CodeError('could not modify review', status.INTERNAL_SERVER_ERROR);
+        
         res.json({status:true, message:'Review modified'});
     },
     async deleteReview(req,res){

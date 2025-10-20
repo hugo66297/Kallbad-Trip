@@ -1,5 +1,5 @@
 /*Patches*/
-//const { inject, errorHandler } = require('express-custom-error');
+const { errorHandler } = require('express-custom-error');
 //inject(); // in order to use async / await
 
 /*Dépendencies*/
@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const logger = require('./util/logger');
 const jws = require('jws');
 const path = require('path');
+const { error } = require('console');
 
 //Instantiate Express App
 const app = express();
@@ -47,4 +48,10 @@ app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/index.html'));
 });
 
+//errorHadler
+app.use((err, req, res, next) => {
+    console.log(err);
+    next(err);
+});
+app.use(errorHandler());
 module.exports = app;

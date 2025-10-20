@@ -33,6 +33,24 @@ app.use(
 );
 
 
+// Configure Helmet and Content Security Policy
+// Allow OpenStreetMap tiles and unpkg (Leaflet) for scripts, styles, images and connections
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://unpkg.com'],
+      styleSrc: ["'self'", 'https://unpkg.com', "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
+      connectSrc: ["'self'", 'https://unpkg.com', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
+      fontSrc: ["'self'", 'https://unpkg.com'],
+      objectSrc: ["'none'"],
+    },
+  })
+);
+
+
 //Express App instance
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -41,6 +59,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(logger.dev, logger.combined);
 app.use(cookieParser());
 app.use(cors());
+
 
 
 //Swagger Configuration & Documentation
@@ -74,20 +93,6 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-const helmet = require("helmet");
-
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://unpkg.com"],
-      styleSrc: ["'self'", "https://unpkg.com"],
-      imgSrc: ["'self'", "data:", "https://*.tile.openstreetmap.org"],
-    },
-  })
-);
-
-app.use(errorHandler());
 const helmet = require("helmet");
 
 app.use(

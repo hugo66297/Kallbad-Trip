@@ -48,7 +48,6 @@ async function getAllBathingWaters(req, res) {
     }
 }
 
-
 async function getBathingWaterById(req, res) {
     //#swagger.tags = ['Bathing Waters']
     //#swagger.summary = 'Retrieves a specific bathing site by its ID'

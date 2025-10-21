@@ -68,7 +68,7 @@ CREATE TABLE bathing_sites (
     -- are fetched from HaV API in real-time!
     -- We only store the API reference here.
     
-    CONSTRAINT chk_api_id_format CHECK (api_id ~ '^[A-Z]{2}-[0-9]+$')
+    CONSTRAINT chk_api_id_format CHECK (api_id ~ '^[A-Z]{2}[0-9]*$')
 );
 
 CREATE INDEX idx_bathing_sites_api_id ON bathing_sites(api_id);
@@ -282,16 +282,16 @@ ON CONFLICT (email) DO NOTHING;
 -- Note: Real data comes from HaV API, these are just references
 INSERT INTO bathing_sites (api_id, name)
 VALUES 
-    ('SE-001', 'Sample Site 1'),
-    ('SE-002', 'Sample Site 2'),
-    ('SE-003', 'Sample Site 3')
+    ('SE001', 'Sample Site 1'),
+    ('SE002', 'Sample Site 2'),
+    ('SE003', 'Sample Site 3')
 ON CONFLICT (api_id) DO NOTHING;
 
 -- Sample approved review
 INSERT INTO reviews (user_id, site_api_id, rating, review_text, is_approved)
 VALUES (
     2,
-    'SE-001',
+    'SE001',
     4.5,
     'Great bathing spot! Water was cold but refreshing.',
     true
@@ -301,7 +301,7 @@ VALUES (
 INSERT INTO visited_sites (user_id, site_api_id, notes)
 VALUES (
     2,
-    'SE-001',
+    'SE001',
     'Visited with family, had a great time!'
 );
 

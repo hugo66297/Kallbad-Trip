@@ -4,9 +4,9 @@ const CodeError = require('../util/CodeError.js');
 
 async function verifyReviewID(req,res,next) {
 
-    if(isNaN(req.params.id)) return res.status(400).json({status: false, message: 'The id is not on the right format'});
+    if(isNaN(req.params.rid)) return res.status(400).json({status: false, message: 'The id is not on the right format'});
     
-    const r = await db.query(`SELECT id FROM reviews WHERE id = $1`, [req.params.id]);
+    const r = await db.query(`SELECT id FROM reviews WHERE id = $1`, [req.params.rid]);
     const review = r.rows[0];
     if(!review) throw new CodeError('Review does not exist', status.NOT_FOUND);
 

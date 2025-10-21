@@ -58,6 +58,16 @@ module.exports = {
         if(rating < 1 || rating > 5) throw new CodeError('rating must be between 1 and 5', status.BAD_REQUEST);
         if(review_text.length > 500) throw new CodeError('review_text must be less than 500 characters', status.BAD_REQUEST);
 
+        //check if user is the creator of the review
+        const token = req.cookies.authToken;
+        const login = JSON.parse(jws.decode(token).payload);
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const r = await db.query(`SELECT * FROM reviews WHERE id = $1`,[reviewID]);
+        const user = u.rows[0];
+        const review = r.rows[0];
+        
+        if(user.id !== review.user_id) throw new CodeError('You are not the creator of this review', status.FORBIDDEN);
+
         const modifiedReview = await db.query(`UPDATE reviews SET rating = $1, review_text = $2, updated_at = NOW() WHERE id = $3`, [rating, review_text, reviewID]);
         if(!modifiedReview) throw new CodeError('could not modify review', status.INTERNAL_SERVER_ERROR);
         

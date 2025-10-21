@@ -42,10 +42,12 @@ app.use('/api', (req, res) => {
         .json({ status: false, message: 'Endpoint Not Found' })
 });
 
-//Routes to serve the frontend
-app.use(express.static(path.join(__dirname, 'frontend')));
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/index.html'));
+//Serve static files
+app.use(express.static('src/frontend'));
+
+//Root route
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/frontend/index.html');
 });
 
 //errorHadler

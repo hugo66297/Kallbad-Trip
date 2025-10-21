@@ -3,15 +3,41 @@
  */
 
 const bathingWatersService = require('../services/bathingWatersService');
+const dataProcessor = require('../services/dataProcessor');
 
 async function getAllBathingWaters(req, res) {
     //#swagger.tags = ['Bathing Waters']
     //#swagger.summary = 'Retrieves all active bathing sites'
     try {
-        const data = await bathingWatersService.getAllBathingWaters();
+        const { page = 1, limit = 100, bounds } = req.query;
+        
+        const rawData = await bathingWatersService.getAllBathingWaters();
+        let processedData = dataProcessor.processMapData(rawData);
+        
+        // Filter by bounds if provided (to optimize map display)
+        if (bounds) {
+            const { north, south, east, west } = JSON.parse(bounds);
+            processedData = processedData.filter(site => {
+                const lat = site.coordinates.latitude;
+                const lng = site.coordinates.longitude;
+                return lat >= south && lat <= north && lng >= west && lng <= east;
+            });
+        }
+        
+        // Pagination
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + parseInt(limit);
+        const paginatedData = processedData.slice(startIndex, endIndex);
+        
         res.json({
             success: true,
-            data: data
+            data: paginatedData,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages: Math.ceil(processedData.length / limit),
+                totalItems: processedData.length,
+                itemsPerPage: parseInt(limit)
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -37,10 +63,19 @@ async function getBathingWaterById(req, res) {
             });
         }
         
-        const data = await bathingWatersService.getBathingWaterById(id);
+        const rawData = await bathingWatersService.getBathingWaterById(id);
+        const processedData = dataProcessor.processMapData(rawData);
+        
+        if (processedData.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Bathing site not found'
+            });
+        }
+        
         res.json({
             success: true,
-            data: data
+            data: processedData[0]
         });
     } catch (error) {
         const status = error.message.includes('not found') ? 404 : 500;
@@ -57,10 +92,19 @@ async function getBathingWaterProfile(req, res) {
     //#swagger.summary = 'Retrieves the profile of a bathing site'
     try {
         const { id } = req.params;
-        const data = await bathingWatersService.getBathingWaterProfile(id);
+        const rawData = await bathingWatersService.getBathingWaterProfile(id);
+        const processedData = await dataProcessor.processDetailData(rawData);
+        
+        if (!processedData) {
+            return res.status(404).json({
+                success: false,
+                message: 'Bathing site profile not found'
+            });
+        }
+        
         res.json({
             success: true,
-            data: data
+            data: processedData
         });
     } catch (error) {
         const status = error.message.includes('not found') ? 404 : 500;
@@ -77,10 +121,19 @@ async function getBathingWaterResults(req, res) {
     //#swagger.summary = 'Retrieves the monitoring results of a bathing site'
     try {
         const { id } = req.params;
-        const data = await bathingWatersService.getBathingWaterResults(id);
+        const rawData = await bathingWatersService.getBathingWaterResults(id);
+        const processedData = dataProcessor.processMonitoringData(rawData);
+        
+        if (!processedData) {
+            return res.status(404).json({
+                success: false,
+                message: 'Monitoring results not found'
+            });
+        }
+        
         res.json({
             success: true,
-            data: data
+            data: processedData
         });
     } catch (error) {
         const status = error.message.includes('not found') ? 404 : 500;
@@ -103,10 +156,19 @@ async function getForecast(req, res) {
             municName
         };
         
-        const data = await bathingWatersService.getForecast(filters);
+        const rawData = await bathingWatersService.getForecast(filters);
+        const processedData = dataProcessor.processForecastData(rawData);
+        
+        if (!processedData) {
+            return res.status(404).json({
+                success: false,
+                message: 'Forecast data not found'
+            });
+        }
+        
         res.json({
             success: true,
-            data: data
+            data: processedData
         });
     } catch (error) {
         res.status(500).json({
@@ -134,6 +196,7 @@ async function checkApiHealth(req, res) {
         });
     }
 }
+
 
 module.exports = {
     getAllBathingWaters,

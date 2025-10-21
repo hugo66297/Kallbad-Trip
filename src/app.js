@@ -17,20 +17,29 @@ const app = express();
 
 // Configure Helmet and Content Security Policy
 // Allow OpenStreetMap tiles and unpkg (Leaflet) for scripts, styles, images and connections
-app.use(helmet());
-app.use(
-  helmet.contentSecurityPolicy({
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'https://unpkg.com'],
-      styleSrc: ["'self'", 'https://unpkg.com', "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
-      connectSrc: ["'self'", 'https://unpkg.com', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
-      fontSrc: ["'self'", 'https://unpkg.com'],
-      objectSrc: ["'none'"],
-    },
-  })
-);
+      "script-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://unpkg.com",
+        "https://tile.openstreetmap.org"
+      ],
+      "connect-src": ["'self'", "https://unpkg.com"],
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://tile.openstreetmap.org",
+        "https://*.tile.openstreetmap.org",
+        "https://unpkg.com"
+      ],
+      "object-src": ["'none'"]
+    }
+  }
+}));
+
 
 
 //Express App instance
@@ -74,18 +83,6 @@ app.use((err, req, res, next) => {
     next(err);
 });
 app.use(errorHandler());
-const helmet = require("helmet");
-
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://unpkg.com"],
-      styleSrc: ["'self'", "https://unpkg.com"],
-      imgSrc: ["'self'", "data:", "https://*.tile.openstreetmap.org"],
-    },
-  })
-);
 
 
 module.exports = app;

@@ -2,6 +2,11 @@ const db = require('../util/db.js');
 const status = require('http-status');
 const CodeError = require('../util/CodeError.js');
 
+async function verifyUserID(req,res,next) {
+
+    next();
+}
+
 async function verifyReviewID(req,res,next) {
 
     if(isNaN(req.params.rid)) return res.status(400).json({status: false, message: 'The id is not on the right format'});
@@ -24,4 +29,4 @@ async function verifyLocationID(req, res, next){
     next();
 }
 
-module.exports = {verifyReviewID, verifyLocationID};
+module.exports = {verifyUserID,verifyReviewID, verifyLocationID};

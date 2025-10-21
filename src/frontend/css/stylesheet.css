@@ -21,7 +21,7 @@ body{
 
 /* Map container must have an explicit height for Leaflet to render */
 #map{
-    height: 50vh; /* responsive: 50% of viewport height */
+    height: 60vh; /* responsive: 50% of viewport height */
     width: 70%;
     box-sizing: border-box;
 }

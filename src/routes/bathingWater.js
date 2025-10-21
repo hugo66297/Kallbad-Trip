@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const bathingWater = require('../controllers/bathingWater.js');
 
+const verifyMiddleware = require('../middlewares/verify.js');
+
+router.use('/bathing-waters/:lid', verifyMiddleware.verifyLocationID);
+
 /**
  * GET /api/health
  * Checks the external API health status
@@ -15,22 +19,10 @@ router.get('/health', bathingWater.checkApiHealth);
 router.get('/bathing-waters', bathingWater.getAllBathingWaters);
 
 /**
- * GET /api/bathing-waters/:id
- * Retrieves a specific bathing site by its ID
- */
-router.get('/bathing-waters/:id', bathingWater.getBathingWaterById);
-
-/**
  * GET /api/bathing-waters/:id/profile
  * Retrieves the complete profile of a bathing site
  */
-router.get('/bathing-waters/:id/profile', bathingWater.getBathingWaterProfile);
-
-/**
- * GET /api/bathing-waters/:id/results
- * Retrieves the monitoring results of a site
- */
-router.get('/bathing-waters/:id/results', bathingWater.getBathingWaterResults);
+router.get('/bathing-waters/:lid/profile', bathingWater.getBathingWaterProfile);
 
 /**
  * GET /api/forecasts

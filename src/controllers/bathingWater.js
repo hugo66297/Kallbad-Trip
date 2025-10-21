@@ -45,43 +45,11 @@ module.exports = {
         }
     },
 
-    async getBathingWaterById(req, res) {
-        //#swagger.tags = ['Bathing Waters']
-        //#swagger.summary = 'Retrieves a specific bathing site by its ID'
-        try {
-            const { id } = req.params;
-            
-            // Basic ID format validation
-            const idPattern = /^SE[A-Z0-9]{4}[0-9]{12}$/;
-            if (!idPattern.test(id)) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Invalid ID format. Expected format: SE[A-Z0-9]{4}[0-9]{12}'
-                });
-            }
-            
-            const rawData = await bathingWatersService.getBathingWaterById(id);
-            const processedData = dataProcessor.processMapData(rawData);
-            
-            if (processedData.length === 0) {
-                throw new CodeError('Bathing site not found', status.NOT_FOUND);
-            }
-            res.json({
-                success: true,
-                message: 'Retrieving all Bathing sites',
-                data: processedData[0]
-            });
-        } catch (error) {
-            const statusCode = error.message.includes('not found') ? status.NOT_FOUND : status.INTERNAL_SERVER_ERROR;
-            throw new CodeError(`Error retrieving bathing site : ${error.message}`, statusCode);
-        }
-    },
-
     async getBathingWaterProfile(req, res) {
         //#swagger.tags = ['Bathing Waters']
         //#swagger.summary = 'Retrieves the profile of a bathing site'
-        try {
-            const { id } = req.params;
+        try {   
+            const id = req.params.lid;
             const rawData = await bathingWatersService.getBathingWaterProfile(id);
             const processedData = await dataProcessor.processDetailData(rawData);
             
@@ -97,29 +65,6 @@ module.exports = {
         } catch (error) {
             const statusCode = error.message.includes('not found') ? status.NOT_FOUND : status.INTERNAL_SERVER_ERROR;
             throw new CodeError(`Error retrieving bathing site profile : ${error.message}`, statusCode);
-        }
-    },
-
-    async getBathingWaterResults(req, res) {
-        //#swagger.tags = ['Bathing Waters']
-        //#swagger.summary = 'Retrieves the monitoring results of a bathing site'
-        try {
-            const { id } = req.params;
-            const rawData = await bathingWatersService.getBathingWaterResults(id);
-            const processedData = dataProcessor.processMonitoringData(rawData);
-            
-            if (!processedData) {
-                throw new CodeError('Monitoring results not found', status.NOT_FOUND);
-            }
-            
-            res.json({
-                success: true,
-                message: 'Retrieving bathing site monitoring results',
-                data: processedData
-            });
-        } catch (error) {
-            const statusCode = error.message.includes('not found') ? status.NOT_FOUND : status.INTERNAL_SERVER_ERROR;
-            throw new CodeError(`Error retrieving monitoring results : ${error.message}`, statusCode);
         }
     },
 

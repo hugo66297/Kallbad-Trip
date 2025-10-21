@@ -25,6 +25,10 @@
           "Bathing Waters"
         ],
         "summary": "Checks the external API health status",
+        "tags": [
+          "Bathing Waters"
+        ],
+        "summary": "Checks the external API health status",
         "description": "",
         "responses": {
           "200": {
@@ -35,6 +39,10 @@
     },
     "/bathing-waters": {
       "get": {
+        "tags": [
+          "Bathing Waters"
+        ],
+        "summary": "Retrieves all active bathing sites",
         "tags": [
           "Bathing Waters"
         ],
@@ -69,10 +77,44 @@
         "tags": [
           "Bathing Waters"
         ],
+        "summary": "Retrieves a specific bathing site by its ID",
+        "tags": [
+          "Bathing Waters"
+        ],
+        "summary": "Retrieves the profile of a bathing site",
+        "tags": [
+          "Bathing Waters"
+        ],
         "summary": "Retrieves the profile of a bathing site",
         "description": "",
         "parameters": [
           {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/bathing-waters/{id}/results": {
+      "get": {
+        "tags": [
+          "Bathing Waters"
+        ],
+        "summary": "Retrieves the monitoring results of a bathing site",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
             "name": "lid",
             "in": "path",
             "required": true,
@@ -439,6 +481,562 @@
         "parameters": [
           {
             "name": "lid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to create an account you canq add firstname and lastname optionally",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "username, email and password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "Hugo"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "kalbad@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password1234!"
+                }
+              },
+              "required": [
+                "username",
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to login",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "email and password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "kalbad@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password1234!"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to logout",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/changeInfo": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to edit your account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "you can change pseudo, email, password, firstname, lastname",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "kalbad@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password1234!"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to delete your account",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/locations/{lid}/reviews": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to get all reviews from the location ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "lid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to add a review to a location ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "lid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "rating and review_text",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "number",
+                  "example": 4
+                },
+                "review_text": {
+                  "type": "string",
+                  "example": "Smell wierd but water is warm !"
+                }
+              },
+              "required": [
+                "rating",
+                "review_text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/review/{id}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to modify a review",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "you can change rating and review_text",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "number",
+                  "example": 2
+                },
+                "review_text": {
+                  "type": "string",
+                  "example": "too bad bro !"
+                }
+              },
+              "required": [
+                "rating",
+                "review_text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to delete a review",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to create an account you canq add firstname and lastname optionally",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "username, email and password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "Hugo"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "kalbad@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password1234!"
+                }
+              },
+              "required": [
+                "username",
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to login",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "email and password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "kalbad@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password1234!"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to logout",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/changeInfo": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to edit your account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "you can change pseudo, email, password, firstname, lastname",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "kalbad@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password1234!"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to delete your account",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/locations/{lid}/reviews": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to get all reviews from the location ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "lid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to add a review to a location ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "lid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "rating and review_text",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "number",
+                  "example": 4
+                },
+                "review_text": {
+                  "type": "string",
+                  "example": "Smell wierd but water is warm !"
+                }
+              },
+              "required": [
+                "rating",
+                "review_text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/review/{id}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to modify a review",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "you can change rating and review_text",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "number",
+                  "example": 2
+                },
+                "review_text": {
+                  "type": "string",
+                  "example": "too bad bro !"
+                }
+              },
+              "required": [
+                "rating",
+                "review_text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Endpoint to delete a review",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"

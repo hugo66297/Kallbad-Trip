@@ -4,6 +4,7 @@ const outputFile = 'swagger_output.json'
 const endpointsFiles = ['./src/routes/router.js']
 
 swaggerAutogen(outputFile, endpointsFiles, {
+    host: 'localhost:3002',
     basePath: '/api',
     securityDefinitions: {
         apiKeyAuth: {

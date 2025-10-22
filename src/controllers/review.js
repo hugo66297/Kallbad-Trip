@@ -49,7 +49,7 @@ module.exports = {
         //#swagger.summary = 'Endpoint to modify a review'
         //#swagger.parameters['obj'] = { in: 'body', description: 'you can change rating and review_text', required: true, schema: { $rating: 2, $review_text: 'too bad bro !' }}
 
-        const reviewID = req.params.id;
+        const reviewID = req.params.rid;
         const { rating, review_text } = req.body;
 
         if(!has(req.body,['rating','review_text'])) throw new CodeError('rating and review_text are required', status.BAD_REQUEST);
@@ -76,7 +76,7 @@ module.exports = {
     async deleteReview(req,res){
         //#swagger.tags = ['Reviews']
         //#swagger.summary = 'Endpoint to delete a review'
-        const reviewID = req.params.id;
+        const reviewID = req.params.rid;
         const delR =  await db.query(`DELETE FROM reviews WHERE id = $1`, [reviewID]);
         if(!delR) throw new CodeError('could not delete review', status.INTERNAL_SERVER_ERROR);
 

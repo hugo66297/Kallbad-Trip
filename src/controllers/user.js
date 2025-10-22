@@ -161,12 +161,10 @@ module.exports = {
     async deleteUser(req,res){
         //#swagger.tags = ['Users']
         //#swagger.summary = 'Endpoint to delete your account'
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
-        
+ 
         //check if user exists
         const u = await db.query(
-            `SELECT * FROM users WHERE email = $1`, [login.email]
+            `SELECT * FROM users WHERE email = $1`, [req.login.email]
         );
         const user = u.rows[0];
         if(!user) throw new CodeError('user does not exist', status.BAD_REQUEST);
@@ -176,5 +174,47 @@ module.exports = {
         res.clearCookie('authToken');
         
         res.json({status:true, message:'User deleted'});
+    },
+    
+    // ADMIN ENDPOINTS
+    async getAllUsers(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Endpoint to get all users informations'
+
+        const u = await db.query(`SELECT u.id, u.username, u.email, u.first_name, u.last_name, u.role, u.is_active, u.created_at, u.last_login, COUNT(r.id) AS review_count FROM users u LEFT JOIN reviews r ON u.id = r.user_id GROUP BY u.id ORDER BY u.id`);
+        const users = u.rows;
+
+        res.json({status:true, message:'All users fetched', data: users});
+    },
+    async getUserInfos(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Endpoint to get all reviews from a user'
+
+        const r = await db.query(`SELECT id, site_api_id, rating, review_text,created_at FROM reviews WHERE user_id = $1 ORDER BY id`,[req.params.uid]);
+        const reviews = r.rows;
+
+        res.json({status:true, message:'User infos fetched', data: reviews});
+    },
+    async changeUserStatus(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Endpoint to change user status (ban/unban), (admin/user)'
+        //#swagger.parameters['obj'] = { in: 'body', description: 'is_active (true/false), role (admin/user)', required: true, schema: { $is_active: true, $role: 'admin' }}
+        
+        if(!has(req.body,['is_active','role'])) throw new CodeError('is_active and role are required', status.BAD_REQUEST);
+        const {is_active, role} = req.body;
+        if(typeof is_active !== 'boolean' || (role !== 'admin' && role !== 'user')) throw new CodeError('is_active must be boolean and role must be admin or user', status.BAD_REQUEST);
+
+        await db.query(`UPDATE users SET is_active = $1, role = $2 WHERE id = $3`, [is_active, role, req.params.uid]);
+
+        res.json({status:true, message:'User status changed'});
+
+    },  
+    async deleteUserByAdmin(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Endpoint to delete a user by admin'
+
+        await db.query(`DELETE FROM users WHERE id = $1`, [req.params.uid]);
+        
+        res.json({status:true, message:'User successfully deleted'});
     }
 }

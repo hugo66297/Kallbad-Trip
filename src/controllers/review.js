@@ -81,5 +81,36 @@ module.exports = {
         if(!delR) throw new CodeError('could not delete review', status.INTERNAL_SERVER_ERROR);
 
         res.json({status:true, message:'Review deleted'});
+    },
+
+    // ADMIN ENDPOINTS
+    async getReviewByAdmin(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Admin endpoint to get a review by its ID'
+        const r = await db.query(`SELECT id, user_id, site_api_id, rating, review_text, created_at FROM reviews WHERE id = $1`, [req.params.rid]);
+        const review = r.rows[0];
+        if(!review) throw new CodeError('could not find review', status.INTERNAL_SERVER_ERROR);
+        
+        res.json({status:true, message:'review fetched', data:review});
+    },
+    async modifyReviewByAdmin(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Admin endpoint to modify a review by its ID'
+        //#swagger.parameters['obj'] = { in: 'body', description: 'you can change rating and review_text', required: true, schema: { $rating: 3, $review_text: 'It is much better right now.' }}
+
+        const { rating, review_text } = req.body;
+        const modifiedReview = await db.query(`UPDATE reviews SET rating = $1, review_text = $2, updated_at = NOW() WHERE id = $3`, [rating, review_text, req.params.rid]);
+        if(!modifiedReview) throw new CodeError('could not modify review', status.INTERNAL_SERVER_ERROR);
+
+        res.json({status:true, message:'review successfully modified'});
+    },
+    async deleteReviewByAdmin(req,res){
+        //#swagger.tags = ['Admin']
+        //#swagger.summary = 'Admin endpoint to delete a review by its ID'
+
+        const delR =  await db.query(`DELETE FROM reviews WHERE id = $1`, [req.params.rid]);
+        if(!delR) throw new CodeError('could not delete review', status.INTERNAL_SERVER_ERROR);
+
+        res.json({status:true, message:'Review deleted'});
     }
 }

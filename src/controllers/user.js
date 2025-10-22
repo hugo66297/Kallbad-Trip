@@ -204,8 +204,9 @@ module.exports = {
         const {is_active, role} = req.body;
         if(typeof is_active !== 'boolean' || (role !== 'admin' && role !== 'user')) throw new CodeError('is_active must be boolean and role must be admin or user', status.BAD_REQUEST);
 
-        await db.query(`UPDATE users SET is_active = $1, role = $2 WHERE id = $3`, [is_active, role, req.params.uid]);
-
+        const modU = await db.query(`UPDATE users SET is_active = $1, role = $2 WHERE id = $3`, [is_active, role, req.params.uid]);
+        if(!modU) throw new CodeError('could not modify user', status.INTERNAL_SERVER_ERROR);
+        
         res.json({status:true, message:'User status changed'});
 
     },  
@@ -213,8 +214,9 @@ module.exports = {
         //#swagger.tags = ['Admin']
         //#swagger.summary = 'Endpoint to delete a user by admin'
 
-        await db.query(`DELETE FROM users WHERE id = $1`, [req.params.uid]);
-        
+        const delU = await db.query(`DELETE FROM users WHERE id = $1`, [req.params.uid]);
+        if(!delU) throw new CodeError('could not delete user', status.INTERNAL_SERVER_ERROR);
+
         res.json({status:true, message:'User successfully deleted'});
     }
 }

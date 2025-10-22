@@ -1,4 +1,4 @@
-// --- Initialisation de la carte ---
+// Map initialization
 var map = L.map('map').setView([63.8258, 20.2630], 6);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -6,10 +6,10 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-let markersLayer = L.layerGroup().addTo(map); // contiendra les marqueurs actuels
+let markersLayer = L.layerGroup().addTo(map); // Contains all markers
 let lastBounds = null;
 
-// --- Fonction pour charger les lieux dans les bounds actuels ---
+// Finding bathing waters in the current map view
 async function loadBathingWatersInView() {
   const bounds = map.getBounds();
   const north = bounds.getNorth();
@@ -17,53 +17,57 @@ async function loadBathingWatersInView() {
   const east = bounds.getEast();
   const west = bounds.getWest();
 
-  // On évite de recharger si la vue n’a pas beaucoup changé
+  // avoid reloading if bounds haven't changed significantly
   if (lastBounds && lastBounds.contains(bounds)) return;
-  lastBounds = bounds.pad(-0.2); // marge de 20%
+  lastBounds = bounds.pad(-0.2); // 20% margin
 
-  // Nettoie les anciens marqueurs
   markersLayer.clearLayers();
+  console.log(`Loading visible sites from 27 pages...`);
 
-  console.log(`🔄 Chargement des lieux visibles...`);
+  const totalPages = 27;
+  let allSites = [];
 
   try {
-    const response = await fetch(`http://localhost:3000/api/bathing-waters`);
-    const json = await response.json();
-    const data = json.data || [];
+    // Fetching ALL pages
+    const pagePromises = Array.from({ length: totalPages }, (_, i) =>
+      fetch(`http://localhost:3000/api/bathing-waters?page=${i + 1}`)
+        .then(res => res.json())
+        .then(json => json.data || [])
+        .catch(err => {
+          console.error(`Error at page ${i + 1}:`, err);
+          return [];
+        })
+    );
+
+    // Waiting for all pages
+    const allResults = await Promise.all(pagePromises);
+    allSites = allResults.flat();
 
     let counter = 0;
 
-    data.forEach(site => {
+    // Filtering + adding to the map
+    allSites.forEach(site => {
       if (!site.coordinates) return;
       const { latitude, longitude } = site.coordinates;
 
-      // On ne garde que ceux dans la zone visible
+      // Only if the point is in the visible area
       if (latitude < south || latitude > north || longitude < west || longitude > east) return;
 
-      const name = site.name;
       L.marker([latitude, longitude])
         .addTo(markersLayer)
-        .bindPopup(`<b>${name}</b>`);
+        .bindPopup(`<b>${site.name}</b>`);
       counter++;
     });
 
-    console.log(`✅ ${counter} lieux visibles ajoutés à la carte.`);
+    console.log(`${counter} visible sites added to the map (out of ${allSites.length} total).`);
   } catch (err) {
-    console.error('Erreur lors du chargement des données:', err);
+    console.error('Error loading data:', err);
   }
 }
 
-// --- Événements de la carte ---
+// --- Map events ---
 map.on('moveend', loadBathingWatersInView);
 map.on('zoomend', loadBathingWatersInView);
 
-// --- Premier chargement ---
+// --- Initial load ---
 loadBathingWatersInView();
-
-document.addEventListener('DOMContentLoaded', () => {
-  const button = document.getElementById('showLocation');
-  button.addEventListener('click', () => {
-    window.location.href = './location.html';
-  });
-});
-

@@ -59,3 +59,11 @@ map.on('zoomend', loadBathingWatersInView);
 
 // --- Premier chargement ---
 loadBathingWatersInView();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const button = document.getElementById('showLocation');
+  button.addEventListener('click', () => {
+    window.location.href = './location.html';
+  });
+});
+

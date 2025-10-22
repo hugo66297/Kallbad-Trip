@@ -24,7 +24,7 @@ async function verifyReviewID(req,res,next) {
 async function verifyLocationID(req, res, next){
     const id = req.params.lid;
     
-    const idPattern = /^SE[A-Z0-9]{4}[0-9]{12}$/;
+    const idPattern = /^[A-Z]{2}.*$/;
     if (!idPattern.test(id)) {
         throw new CodeError(`Invalid ID format. ${id}`, status.BAD_REQUEST);
     }

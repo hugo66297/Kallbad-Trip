@@ -5,6 +5,22 @@ const db = require('../util/db.js');
 const jws = require('jws');
 
 module.exports = {
+    async getVisitedSites(req,res){
+        //#swagger.tags = ['Visited Sites']
+        //#swagger.summary = 'Endpoint to get all visited sites of a user'
+        const token = req.cookies.authToken;
+        const login = JSON.parse(jws.decode(token).payload);
+
+        //get user ID
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const user = u.rows[0];
+
+        //get visited sites
+        const vs = await db.query(`SELECT site_api_id, visited_on FROM visited_sites WHERE user_id = $1`, [user.id]);
+        const visitedSites = vs.rows;
+
+        res.json({status:true, message:'Visited sites retrieved successfully', data: visitedSites});
+    },
     async addVisitedSite(req, res) {
         //#swagger.tags = ['Visited Sites']
         //#swagger.summary = 'Endpoint to add a visited site to a user'

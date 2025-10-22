@@ -87,9 +87,7 @@ module.exports = {
         //#swagger.summary = 'Endpoint to edit your account'
         //#swagger.parameters['obj'] = { in: 'body', description: 'you can change pseudo, email, password, firstname, lastname', required: true, schema: { $email:'kalbad@gmail.com', $password: 'Password1234!' }}
         
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
-        const u = await db.query(`SELECT * FROM users WHERE email = $1`,[login.email]);
+        const u = await db.query(`SELECT * FROM users WHERE email = $1`,[req.login.email]);
         const oldUser = u.rows[0];
         if(!oldUser) throw new CodeError('Internal Server Error', status.INTERNAL_SERVER_ERROR);
         

@@ -2,7 +2,6 @@ const has = require('has-keys');
 const status = require('http-status');
 const CodeError = require('../util/CodeError.js');
 const db = require('../util/db.js');
-const jws = require('jws');
 
 module.exports = {
     async getReview(req,res){
@@ -22,8 +21,6 @@ module.exports = {
         //#swagger.parameters['obj'] = { in: 'body', description: 'rating and review_text', required: true, schema: { $rating: 4, $review_text: 'Smell wierd but water is warm !' }}
 
         const locationID = req.params.lid;
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
 
         const { rating, review_text } = req.body;
         
@@ -32,7 +29,7 @@ module.exports = {
         if(review_text.length > 500) throw new CodeError('review_text must be less than 500 characters', status.BAD_REQUEST);
         
         //get user ID from email
-        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [req.login.email]);
         const user = u.rows[0];
         if(!user) throw new CodeError('user does not exist', status.BAD_REQUEST);
 
@@ -59,9 +56,7 @@ module.exports = {
         if(review_text.length > 500) throw new CodeError('review_text must be less than 500 characters', status.BAD_REQUEST);
 
         //check if user is the creator of the review
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
-        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [req.login.email]);
         const r = await db.query(`SELECT * FROM reviews WHERE id = $1`,[reviewID]);
         const user = u.rows[0];
         const review = r.rows[0];
@@ -77,6 +72,13 @@ module.exports = {
         //#swagger.tags = ['Reviews']
         //#swagger.summary = 'Endpoint to delete a review'
         const reviewID = req.params.rid;
+        //check if user is the creator of the review
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`,[req.login.email]);
+        const r = await db.query(`SELECT * FROM reviews WHERE id = $1`,[reviewID]);
+        const user = u.rows[0];
+        const review = r.rows[0];
+        if(user.id !== review.user_id) throw new CodeError('You are not the creator of this review', status.FORBIDDEN);
+
         const delR =  await db.query(`DELETE FROM reviews WHERE id = $1`, [reviewID]);
         if(!delR) throw new CodeError('could not delete review', status.INTERNAL_SERVER_ERROR);
 

@@ -2,17 +2,14 @@ const has = require('has-keys');
 const status = require('http-status');
 const CodeError = require('../util/CodeError.js');
 const db = require('../util/db.js');
-const jws = require('jws');
 
 module.exports = {
     async getVisitedSites(req,res){
         //#swagger.tags = ['Visited Sites']
         //#swagger.summary = 'Endpoint to get all visited sites of a user'
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
 
         //get user ID
-        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [req.login.email]);
         const user = u.rows[0];
 
         //get visited sites
@@ -25,10 +22,8 @@ module.exports = {
         //#swagger.tags = ['Visited Sites']
         //#swagger.summary = 'Endpoint to add a visited site to a user'
         const lid = req.params.lid;
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
         //get user ID
-        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [req.login.email]);
         const user = u.rows[0];
 
         //if location is already in visited sites
@@ -46,11 +41,9 @@ module.exports = {
         //#swagger.tags = ['Visited Sites']
         //#swagger.summary = 'Endpoint to remove a visited site from a user'
         const lid = req.params.lid;
-        const token = req.cookies.authToken;
-        const login = JSON.parse(jws.decode(token).payload);
-        
+
         //get user ID
-        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [login.email]);
+        const u = await db.query(`SELECT id FROM users WHERE email = $1`, [req.login.email]);
         const user = u.rows[0];
 
         //if location is not in visited sites

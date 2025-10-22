@@ -68,7 +68,7 @@ CREATE TABLE bathing_sites (
     -- are fetched from HaV API in real-time!
     -- We only store the API reference here.
     
-    CONSTRAINT chk_api_id_format CHECK (api_id ~ '^[A-Z]{2}[0-9]*$')
+    CONSTRAINT chk_api_id_format CHECK (api_id ~ '^[A-Z]{2}.*$')
 );
 
 CREATE INDEX idx_bathing_sites_api_id ON bathing_sites(api_id);

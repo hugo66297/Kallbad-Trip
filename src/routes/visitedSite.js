@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const visitedSite = require('../controllers/visitedSite.js');
 
+const authMiddleware = require('../middlewares/auth.js');
 const verifyMiddleware = require('../middlewares/verify.js');
 
-router.use('/location/:lid/user/:uid', verifyMiddleware.verifyLocationID,verifyMiddleware.verifyUserID);
+router.use('/user/location/:lid', authMiddleware.verifyTokenPresence, verifyMiddleware.verifyLocationID);
 
-router.put('/location/:lid/user/:uid', visitedSite.addVisitedSite);
-router.delete('/location/:lid/user/:uid', visitedSite.removeVisitedSite);
+router.put('/user/location/:lid', visitedSite.addVisitedSite);
+router.delete('/user/location/:lid', visitedSite.removeVisitedSite);
 
 module.exports = router;

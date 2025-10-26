@@ -1,0 +1,78 @@
+
+.center-wrap {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,0.05);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.auth-box {
+    width: 340px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(22, 23, 24, 0.12);
+    text-align: center;
+}
+
+.auth-box h2 {
+    margin: 0 0 12px;
+    font-size: 20px;
+}
+
+.auth-box form {
+    display: grid;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.auth-box input[type="email"],
+.auth-box input[type="password"],
+.auth-box input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.name-row {
+    display: flex;
+    gap: 8px;
+}
+
+.name-row input {
+    flex: 1;
+}
+
+.auth-box button[type="submit"] {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.auth-box .switch {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #374151;
+}
+
+.auth-box .switch a {
+    color: #2563eb;
+    text-decoration: none;
+    cursor: pointer;
+    margin-left: 6px;
+}
+/* error message */
+.perror{
+    color:red;
+    font-size: small;
+    display: none;
+}

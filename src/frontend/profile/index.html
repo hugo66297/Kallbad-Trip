@@ -44,14 +44,14 @@
         <main class="main">
             <section class="card header" id="overview">
                 <div class="profile">
-                    <div class="avatar" aria-hidden="true">AH</div>
+                    <div class="avatar" id="headerAvatar" aria-hidden="true"></div>
                     <div class="meta">
-                        <div class="name">Alice H. Dupont</div>
-                        <div class="role">Traveler • Grenoble, France</div>
+                        <div class="name" id="headerName"></div>
+                        <div class="role" id="headerRole"></div>
                     </div>
                 </div>
                 <div class="actions">
-                    <button class="btn primary" type="button">Log out</button>
+                    <button id="butLogout" class="btn primary" type="button">Log out</button>
                 </div>
             </section>
 
@@ -76,14 +76,15 @@
                             <input id="firstname" value="" />
                         </div>
                         <div class="field">
-                            <label for="lastName">Last name</label>
-                            <input id="lastName" value="" />
+                            <label for="lastname">Last name</label>
+                            <input id="lastname" value="" />
                         </div>
                     </div>
 
                     <div style="display:flex;justify-content:flex-end;margin-top:8px">
-                        <button class="btn primary" type="button" style="margin-left:8px">Save changes</button>
+                        <button id="butChangeInfo" class="btn primary" type="button" style="margin-left:8px">Save changes</button>
                     </div>
+                    <p class="errormessage" id="profileError"></p>
                 </div>
 
                 <aside class="card" aria-labelledby="security">
@@ -96,7 +97,7 @@
                                 <div style="font-weight:600">Password</div>
                                 <div style="color:var(--muted);font-size:13px">Change your password</div>
                             </div>
-                            <button class="btn ghost" type="button">Change</button>
+                            <button id="butChangePswd" class="btn ghost" type="button">Change</button>
                         </div>
 
                         <div style="display:flex;justify-content:space-between;align-items:center">
@@ -104,10 +105,33 @@
                                 <div style="font-weight:600">Account</div>
                                 <div style="color:var(--muted);font-size:13px">Delete your account permanently</div>
                             </div>
-                            <button class="btn primary" type="button">Delete</button>
+                            <button id="butDelAccount" class="btn primary" type="button">Delete</button>
                         </div>
                     </div>
                 </aside>
+
+                <div id="changePswdPopup" class="popup">
+                    <div class="popupContent">
+                        <h3>Change Password</h3>
+                        <div >
+                            <label for="currentPswd">Current Password</label>
+                            <input id="currentPswd" type="password" />
+                        </div>
+                        <div>
+                            <label for="newPswd">New Password</label>
+                            <input id="newPswd" type="password" />
+                        </div>
+                        <div>
+                            <label for="confirmNewPswd">Confirm New Password</label>
+                            <input id="confirmNewPswd" type="password" />
+                        </div>
+                        <div>
+                            <button id="butCancelChangePswd" class="btn ghost" type="button">Cancel</button>
+                            <button id="butSubmitChangePswd" class="btn primary" type="button">Change Password</button>
+                        </div>
+                        <p id="pswdChangeError" class="errormessage"></p>
+                    </div>
+                </div>
 
             </section>
             <section class="section manageusers">

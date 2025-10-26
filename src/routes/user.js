@@ -5,6 +5,7 @@ const user = require('../controllers/user.js');
 const authMiddleware = require('../middlewares/auth.js');
 const verifyMiddleware = require('../middlewares/verify.js');
 
+router.use('/checkAuth', authMiddleware.verifyTokenPresence);
 router.use('/logout', authMiddleware.verifyTokenPresence);
 router.use('/changeInfo', authMiddleware.verifyTokenPresence);
 router.use('/manage/user',authMiddleware.verifyTokenPresence, authMiddleware.verifyTokenAdmin);
@@ -12,6 +13,7 @@ router.use('/manage/user/:uid', verifyMiddleware.verifyUserID);
 
 router.post('/register', user.register);
 router.post('/login',user.login);
+router.get('/checkAuth',user.checkAuth);
 router.get('/logout',user.logout);
 
 router.put('/changeInfo', user.modifyUser);

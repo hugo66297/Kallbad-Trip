@@ -74,6 +74,14 @@ module.exports = {
             return;
         } throw new CodeError("Wrong password", status.UNAUTHORIZED);
     },
+    async checkAuth(req,res){
+        //#swagger.tags = ['Users']
+        //#swagger.summary = 'Endpoint to check if user is authenticated and retrieve data'
+        
+        const data = await db.query(`SELECT username, email, first_name, last_name, role, is_active FROM users WHERE email = $1`, [req.login.email]);
+
+        res.json({status:true, message:'User is authenticated', data: data.rows[0]});
+    },
     async logout(req,res){
         //#swagger.tags = ['Users']
         //#swagger.summary = 'Endpoint to logout'

@@ -49,8 +49,6 @@ document.addEventListener('DOMContentLoaded', async() => {
             submitBtn.textContent = isRegister ? 'Register' : 'Login';
         }, 800);
 
-        console.log('Submit payload:', payload);
-
         if(!isRegister){
             const resp = await (await fetch('/api/login', {
                 method: 'POST',

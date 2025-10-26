@@ -141,14 +141,17 @@ module.exports = {
             const existing = up.rows[0];
             if(existing) throw new CodeError("Email already used", status.CONFLICT);
         }
-
+        // Handle null for firstname and lastname
+        var boolFN = userModified.hasOwnProperty('firstname') && userModified.firstname === null;
+        var boolLN = userModified.hasOwnProperty('lastname') && userModified.lastname === null;
+        
         // Update user
         if(userModified.password){
             userModified.passhash = await bcrypt.hash(req.body.password, 10);
         }
         const updatedUser = await db.query(
             `UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4, password_hash = $5 WHERE id = $6`,
-            [userModified.pseudo ? userModified.pseudo : oldUser.username, userModified.email ? userModified.email : oldUser.email, userModified.firstname ? userModified.firstname.charAt(0).toUpperCase() + userModified.firstname.slice(1).toLowerCase() : oldUser.first_name, userModified.lastname ? userModified.lastname.charAt(0).toUpperCase() + userModified.lastname.slice(1).toLowerCase() : oldUser.last_name, userModified.passhash ? userModified.passhash : oldUser.password_hash, oldUser.id]
+            [userModified.pseudo ? userModified.pseudo : oldUser.username, userModified.email ? userModified.email : oldUser.email, boolFN ? null : (userModified.firstname ? userModified.firstname.charAt(0).toUpperCase() + userModified.firstname.slice(1).toLowerCase() : oldUser.first_name), boolLN ? null : (userModified.lastname ? userModified.lastname.charAt(0).toUpperCase() + userModified.lastname.slice(1).toLowerCase() : oldUser.last_name), userModified.passhash ? userModified.passhash : oldUser.password_hash, oldUser.id]
         )
         // update cookie if email or pseudo changed
         if(userModified.pseudo || userModified.email){

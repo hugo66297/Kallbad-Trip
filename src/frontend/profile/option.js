@@ -41,9 +41,6 @@ document.addEventListener('DOMContentLoaded', async() => {
             } 
         });
     });
-
-
-    console.log(isLogged);
     const numberLocation = (await (await fetch("/api/user/location")).json()).data.length;
 
     const headerName = document.getElementById('headerName');
@@ -73,11 +70,12 @@ document.addEventListener('DOMContentLoaded', async() => {
     fieldlastname.value = isLogged.last_name;
 
     butChangeInfo.addEventListener('click', async () => {
-        // pseudo, email, password, firstname, lastname
+
         const nPseudo = fieldusername.value;
         const nEmail = fieldemail.value;
-        const nFirstname = fieldfirstname.value;
-        const nLastname = fieldlastname.value;
+        // si le champ est vide, on envoie null pour le remettre à null en base de données
+        const nFirstname = (fieldfirstname.value == "") ? null : fieldfirstname.value;
+        const nLastname = (fieldlastname.value == "") ? null : fieldlastname.value;
         const resp = await (await fetch('/api/changeInfo', {
             method: 'PUT',
             headers: {
@@ -90,7 +88,6 @@ document.addEventListener('DOMContentLoaded', async() => {
                 lastname: nLastname
             })
         })).json();
-        console.log(resp);
         if(resp.status){
             window.location.reload();
         } else {

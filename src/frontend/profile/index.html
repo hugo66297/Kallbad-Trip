@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="style.css">
+    <title>Profile</title>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" aria-label="Profile navigation">
+            <div class="brand">
+                <div class="logo">KT</div>
+                <div>
+                    <div class="title">Kallbad-Trip</div>
+                    <div class="subtitle">User profile</div>
+                </div>
+            </div>
+
+            <nav role="navigation" aria-label="Left menu">
+                <ul class="menu" role="menu">
+                    <li role="none">
+                        <a href="#overview" class="active" role="menuitem" aria-current="page">
+                            <span class="icon" aria-hidden="true">👤</span>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li role="none">
+                        <a href="#settings" role="menuitem">
+                            <span class="icon" aria-hidden="true">⚙️</span>
+                            <span>Manage users</span>
+                        </a>
+                    </li>
+                    <li role="none">
+                        <a href="#security" role="menuitem">
+                            <span class="icon" aria-hidden="true">📖</span>
+                            <span>Manage reviews</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <section class="card header" id="overview">
+                <div class="profile">
+                    <div class="avatar" aria-hidden="true">AH</div>
+                    <div class="meta">
+                        <div class="name">Alice H. Dupont</div>
+                        <div class="role">Traveler • Grenoble, France</div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn primary" type="button">Log out</button>
+                </div>
+            </section>
+
+            <section class="section overview">
+
+                <div class="card">
+                    <h3 style="margin:0 0 12px 0">Account details</h3>
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" value="" />
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" value="" />
+                    </div>
+
+                    <div class="col2">
+                        <div class="field">
+                            <label for="firstname">First name</label>
+                            <input id="firstname" value="" />
+                        </div>
+                        <div class="field">
+                            <label for="lastName">Last name</label>
+                            <input id="lastName" value="" />
+                        </div>
+                    </div>
+
+                    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+                        <button class="btn primary" type="button" style="margin-left:8px">Save changes</button>
+                    </div>
+                </div>
+
+                <aside class="card" aria-labelledby="security">
+                    <h4 id="security" style="margin-top:0">Security</h4>
+                    <p style="color:var(--muted);font-size:14px">In this security corner, you can change your password or delete your account permanently</p>
+
+                    <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-weight:600">Password</div>
+                                <div style="color:var(--muted);font-size:13px">Change your password</div>
+                            </div>
+                            <button class="btn ghost" type="button">Change</button>
+                        </div>
+
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-weight:600">Account</div>
+                                <div style="color:var(--muted);font-size:13px">Delete your account permanently</div>
+                            </div>
+                            <button class="btn primary" type="button">Delete</button>
+                        </div>
+                    </div>
+                </aside>
+
+            </section>
+            <section class="section manageusers">
+                <div class="card">
+
+                </div>
+            </section>
+            <section class="section managereviews">
+                <div class="card">
+
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="option.js"></script>
+</body>
+</html>

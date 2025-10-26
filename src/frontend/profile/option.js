@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', async() => {
         window.location.href = "/login";
     }
 
+    const adminOptions = document.querySelectorAll('.adminOpt');
+    if(isLogged.role === 'admin'){
+        adminOptions.forEach(opt => {
+            opt.style.display = 'block';
+        });
+    }
+
     const cardOverview = document.querySelector(".overview");
     const cardManageUsers = document.querySelector(".manageusers");
     const cardManageReviews = document.querySelector(".managereviews");

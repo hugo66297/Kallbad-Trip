@@ -254,7 +254,9 @@ document.addEventListener('DOMContentLoaded', async() => {
         });
     }
     async function displayReviews(userData){
-        const card = document.getElementById('manageUR');;
+        const card = document.getElementById('manageUR');
+        const reviewError = document.getElementById('reviewError');
+
         card.style.display = 'block';
         const titlecard = document.getElementById('titlecard');
 
@@ -282,7 +284,8 @@ document.addEventListener('DOMContentLoaded', async() => {
             })).json();
 
             if(!ModifResp.status){
-                alert('Error: ' + ModifResp.message);
+                reviewError.textContent = 'Error: ' + ModifResp.message;
+                reviewError.style.display = 'block';
             } else {
                 fetchUsers();
                 displayReviews(ModifResp.data);
@@ -327,6 +330,32 @@ document.addEventListener('DOMContentLoaded', async() => {
                     <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>`;
+
+            const editRBtn = clone.querySelector('.editRBtn');
+            const deleteRBtn = clone.querySelector('.deleteRBtn');
+            editRBtn.addEventListener('click', () => {
+                alert('Edit review feature not implemented yet.');
+            });
+            deleteRBtn.addEventListener('click', async () => {
+                const confirmDelete = confirm("Are you sure you want to delete this review? This action is irreversible.");
+                if (confirmDelete) {
+                    const delResp = await (await fetch('/api/review/' + encodeURIComponent(r.id), {
+                        method: 'DELETE'
+                    })).json();
+                    if (!delResp.status) {
+                        reviewError.textContent = 'Error: ' + delResp.message;
+                        reviewError.style.display = 'block';
+                    } else {
+                        const usrRes = await (await fetch('/api/manage/user/' + encodeURIComponent(userData.user.id), { method: 'GET' })).json();
+                        if(!usrRes.status){
+                            reviewError.textContent = usrRes.message;
+                            reviewError.style.display = 'block';
+                        } else {
+                            displayReviews(usrRes.data);
+                        }
+                    }
+                }
+            });
 
             reviewsList.appendChild(clone);
         });

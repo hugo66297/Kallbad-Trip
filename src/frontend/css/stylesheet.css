@@ -94,7 +94,7 @@ body{
     resize: vertical;
     font-family: inherit;
 }
-.review-form button{
+#submitReviewBtn{
     margin-top: 0.5rem;
     padding: 0.5rem 0.75rem;
     background: #0b69a3;
@@ -159,17 +159,6 @@ body{
     align-items: center;
     padding: 1rem 2rem;
 }
-
-button{
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    color: rgb(81, 234, 236);
-    background-color: rgb(2, 99, 179);
-    border:none;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 1rem;
-}
 /*for review form*/
 input {
     width: 90%;
@@ -185,6 +174,8 @@ input {
     width: 100%;
 }
 .onereview{
+    display: flex;
+    justify-content: space-between;
     border-radius: 10px;
     background: #f0f4f7;
     padding: 0.75rem;
@@ -205,4 +196,20 @@ input {
     font-size: 0.85rem;
     color: #6b7280;
     margin-bottom: 4px;
+}
+.review-actions {
+    display: flex;
+    gap: 8px;
+}
+.review-actions button {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+#editYRBtn{
+    color: blue;
+}
+#deleteYRBtn{
+    color: red;
 }

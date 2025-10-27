@@ -199,8 +199,58 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 clone.querySelector('.review-rating').innerHTML = starsHTML;
                 clone.querySelector('.review-comment').textContent = r.review_text;
-                clone.querySelector('.review-date').innerHTML = `by <strong>${r.username}</strong> · ${new Date(r.created_at).toLocaleDateString()}`;
+                var who = r.username;
+                if(r.username == isLogged.username)
+                {
+                    who = "you";
+                }
+                clone.querySelector('.review-date').innerHTML = `by <strong>${who}</strong> · ${new Date(r.created_at).toLocaleDateString()}`;
+
+                const actionsDiv = clone.querySelector('.review-actions');
+                // If the logged-in user is the author of the review
+                if (isLogged.username === r.username) {
+                    actionsDiv.innerHTML = `
+                        <button id="editYRBtn" class="btn ghost editYRBtn" title="Edit">
+                            <!-- eye icon -->
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.2"/>
+                            </svg>
+                        </button>
+                        <button id="deleteYRBtn" class="btn ghost deleteYRBtn" title="Delete">
+                            <!-- trash icon -->
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M3 6h18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>`;
                 
+                    //functions for edit and delete
+                    const editBtn = actionsDiv.querySelector('.editYRBtn');
+                    const deleteBtn = actionsDiv.querySelector('.deleteYRBtn');
+                    
+                    editBtn.addEventListener('click', async () => {
+                        alert('Edit review feature not implemented yet.');
+                    });
+
+                    deleteBtn.addEventListener('click', async () => {
+                        if (confirm('Are you sure you want to delete your review?')) {
+                            const delResp = await (await fetch(`/api/review/${encodeURIComponent(r.id)}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })).json();
+                            if (delResp.status) {
+                                // Reload reviews
+                                renderReviews(siteId);
+                            } else {
+                                alert('Failed to delete review: ' + (delResp.error || 'Unknown error'));
+                            }
+                        }
+                    });
+                }
 
                 reviewsList.appendChild(clone);
             });

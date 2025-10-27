@@ -15,11 +15,9 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     const cardOverview = document.querySelector(".overview");
     const cardManageUsers = document.querySelector(".manageusers");
-    const cardManageReviews = document.querySelector(".managereviews");
 
     cardOverview.style.display = 'grid';
     cardManageUsers.style.display = 'none';
-    cardManageReviews.style.display = 'none';
 
     document.querySelectorAll('.menu a').forEach(a=>{
         a.addEventListener('click', e=>{
@@ -29,16 +27,11 @@ document.addEventListener('DOMContentLoaded', async() => {
             if (a.getAttribute('href') === '#overview') {
                 cardOverview.style.display = 'grid';
                 cardManageUsers.style.display = 'none';
-                cardManageReviews.style.display = 'none';
             } else if (a.getAttribute('href') === '#settings') {
                 cardOverview.style.display = 'none';
                 cardManageUsers.style.display = 'block';
-                cardManageReviews.style.display = 'none';
-            } else if (a.getAttribute('href') === '#security') {
-                cardOverview.style.display = 'none';
-                cardManageUsers.style.display = 'none';
-                cardManageReviews.style.display = 'block';
-            } 
+                fetchUsers();
+            }
         });
     });
     const numberLocation = (await (await fetch("/api/user/location")).json()).data.length;
@@ -56,6 +49,8 @@ document.addEventListener('DOMContentLoaded', async() => {
         await fetch("/api/logout", { method: "GET" });
         window.location.href = "/";
     });
+
+    // MANAGE USERS
 
     const fieldusername = document.getElementById('username');
     const fieldemail = document.getElementById('email');
@@ -177,5 +172,121 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     });
     
+    // MANAGE USERS ADMIN
 
+    const tbody = document.querySelector('#usersTable tbody');
+    const errEl = document.getElementById('usersError');
+
+    async function fetchUsers(){
+        errEl.textContent = '';
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:12px">Loading…</td></tr>';
+        const res = await (await fetch('/api/manage/user')).json();
+        if(res.status){
+            renderUsers(res.data);
+        } else {
+            errEl.textContent = res.message;
+            errEl.style.display = 'block';
+        }
+        
+    }
+
+    function renderUsers(users){
+        tbody.innerHTML = '';
+        if(!Array.isArray(users) || users.length === 0){
+            tbody.innerHTML = '<tr><td colspan="6" style="padding:12px">No users</td></tr>';
+            return;
+        }
+
+        users.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${u.id}</td>
+                <td>${u.username}</td>
+                <td>${u.email}</td>
+                <td>${(u.role === 'admin') ? 'Administrator' : 'Traveler'}</td>
+                <td>${u.is_active ? 'Yes' : 'Banned'}</td>
+                <td>
+                    <button id="detailsBtn" class="btn ghost detailsBtn" data-id="${u.id}" title="details">
+                        <!-- eye icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.2"/>
+                        </svg>
+                    </button>
+                    <button id="deleteBtn" class="btn ghost deleteBtn" data-id="${u.id}" title="Delete">
+                        <!-- trash icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M3 6h18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('.deleteBtn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                if(!confirm('Delete user #' + id + ' ?')) return;
+                const delres = await (await fetch('/api/manage/user/' + encodeURIComponent(id), { method: 'DELETE' })).json();
+                if(!delres.status){
+                    errEl.textContent = delres.message;
+                    errEl.style.display = 'block';
+                } else {
+                    fetchUsers();
+                }
+            });
+        });
+
+        tbody.querySelectorAll('.detailsBtn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                const userRes = await (await fetch('/api/manage/user/' + encodeURIComponent(id), { method: 'GET' })).json();
+                if(!userRes.status){
+                    errEl.textContent = userRes.message;
+                    errEl.style.display = 'block';
+                } else {
+                    displayReviews(userRes.data);
+                }
+            });
+        });
+    }
+    async function displayReviews(userData){
+        const card = document.getElementById('manageUR');;
+        card.style.display = 'block';
+        const titlecard = document.getElementById('titlecard');
+
+        titlecard.textContent = `Manage user #${userData.user.id} : ${userData.user.username}`;
+
+        const toggleAdmin = document.getElementById('toggleAdmin');
+        const toggleActive = document.getElementById('toggleActive');
+        const butStatusChange = document.getElementById('usrStatusChange');
+
+        userData.user.role === 'admin' ? toggleAdmin.checked = true : toggleAdmin.checked = false;
+        userData.user.is_active ? toggleActive.checked = false : toggleActive.checked = true;
+
+        butStatusChange.onclick = async () => {
+            const newRole = toggleAdmin.checked ? 'admin' : 'user';
+            const newActive = !toggleActive.checked;
+            const ModifResp = await (await fetch('/api/manage/user/' + encodeURIComponent(userData.user.id),{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    role: newRole,
+                    is_active: newActive
+                })
+            })).json();
+
+            if(!ModifResp.status){
+                alert('Error: ' + ModifResp.message);
+            } else {
+                fetchUsers();
+                displayReviews(ModifResp.data);
+            }
+        };
+    }
 });

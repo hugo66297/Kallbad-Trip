@@ -31,12 +31,6 @@
                             <span>Manage users</span>
                         </a>
                     </li>
-                    <li class="adminOpt"role="none">
-                        <a href="#security" role="menuitem">
-                            <span class="icon" aria-hidden="true">📖</span>
-                            <span>Manage reviews</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
         </aside>
@@ -136,12 +130,43 @@
             </section>
             <section class="section manageusers">
                 <div class="card">
-
+                    <h3 style="margin:0 0 12px 0">Manage users</h3>
+                    <div class="users-table" style="overflow:auto">
+                        <table id="usersTable" style="width:100%;border-collapse:collapse">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Active</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <p id="usersError" class="errormessage"></p>
+                    </div>
                 </div>
-            </section>
-            <section class="section managereviews">
-                <div class="card">
 
+                <div id="manageUR" class="card reviews">
+                    <h3 id="titlecard" style="margin:0 0 12px 0"></h3>
+                        <div class="toggle-container">
+                            <label class="toggle">
+                                <input type="checkbox" id="toggleAdmin">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="toggleLabel">Admin Role</span>
+                            
+                            <label class="toggle">
+                                <input type="checkbox" id="toggleActive">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="toggleActive">Ban user</span>
+
+                             <button id="usrStatusChange" class="btn primary" type="button">Save</button>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>

@@ -49,6 +49,51 @@ body{
 .back-link{ color:#0b69a3; text-decoration:none; font-weight:600; }
 .back-link:hover{ text-decoration:underline; }
 
+/* Reviews list */
+.reviews{
+    margin-top: 1rem;
+}
+.review-item{
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 12px rgba(2,6,23,0.04);
+}
+.review-item .meta{ font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem; }
+.review-item .text{ color: #111827; }
+
+/* Reviews container sizing and form */
+#reviewsContainer{
+    width: 66%; /* two thirds */
+    max-width: 900px;
+    margin: 1rem auto;
+}
+
+.review-form textarea{
+    width: 100%;
+    min-height: 80px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    resize: vertical;
+    font-family: inherit;
+}
+.review-form button{
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #0b69a3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.review-note{ font-size: 0.9rem; color:#6b7280; margin-top:0.5rem }
+
+/* Header link */
+.site-header a{ color: #8fd8ff; text-decoration:none; font-weight:700; }
+.site-header a:hover{ text-decoration:underline; }
+
 /* Map container must have an explicit height for Leaflet to render */
 #map{
     height: 60vh; /* responsive: 50% of viewport height */

@@ -125,13 +125,31 @@ body{
 /* Map container must have an explicit height for Leaflet to render */
 #map{
     height: 60vh; /* responsive: 50% of viewport height */
-    width: 70%;
+    width: 100%;
     box-sizing: border-box;
 }
 
 /* Small screens: ensure map remains usable */
 @media (max-width: 600px) {
   #map{ height: 50vh; }
+}
+
+/* Index page split layout */
+.map-row{
+    display: flex;
+    gap: 3.5rem; /* increased horizontal gap between map and intro (made larger) */
+    width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
+}
+.map-card{ flex: 2; }
+.intro-card{ flex: 1; min-height: 420px; /* grow vertically, not wider */ }
+.intro-card .card{ padding:1.25rem; }
+
+@media (max-width: 900px){
+    .map-row{ flex-direction: column; }
+    .intro-card, .map-card{ width: 100%; }
+    .intro-card{ min-height: auto; } /* let it size naturally on small screens */
 }
 
 .main{

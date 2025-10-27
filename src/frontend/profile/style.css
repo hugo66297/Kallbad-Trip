@@ -159,6 +159,12 @@ nav[role="navigation"]{
     font-size:13px;
     color:var(--muted);
 }
+.meta .ban{
+    display: none;
+    font-size:13px;
+    color: var(--danger, #c00);
+    font-weight: 600;
+}
 
 .section, .overview{
     grid-template-columns:1fr 320px;

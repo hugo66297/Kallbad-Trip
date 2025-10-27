@@ -38,11 +38,13 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     const headerName = document.getElementById('headerName');
     const headerRole = document.getElementById('headerRole');
+    const headerBan = document.getElementById('headerBan');
     const headerAvatar = document.getElementById('headerAvatar');
     const butLogout = document.getElementById('butLogout');
 
     headerName.textContent = isLogged.username;
     headerRole.textContent = ((isLogged.role === 'admin') ? 'Administrator' : 'Traveler') + ' • ' + numberLocation + ' visited sites';
+    headerBan.style.display = isLogged.is_active ? 'none' : 'block';
     headerAvatar.textContent = (isLogged.first_name != null && isLogged.last_name != null) ? (isLogged.first_name.charAt(0) + isLogged.last_name.charAt(0)).toUpperCase() : (isLogged.username.charAt(0) + isLogged.username.charAt(1)).toUpperCase();
 
     butLogout.addEventListener('click', async () => {

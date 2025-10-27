@@ -197,12 +197,13 @@ module.exports = {
     },
     async getUserInfos(req,res){
         //#swagger.tags = ['Admin']
-        //#swagger.summary = 'Endpoint to get all reviews from a user'
+        //#swagger.summary = 'Endpoint to get all reviews from a user and the user infos'
 
         const r = await db.query(`SELECT id, site_api_id, rating, review_text,created_at FROM reviews WHERE user_id = $1 ORDER BY id`,[req.params.uid]);
         const reviews = r.rows;
-
-        res.json({status:true, message:'User infos fetched', data: reviews});
+        const u = await db.query(`SELECT id, username, role, is_active FROM users WHERE id = $1`, [req.params.uid]);
+        const user = u.rows[0];
+        res.json({status:true, message:'User infos fetched', data: {reviews: reviews, user: user}});
     },
     async changeUserStatus(req,res){
         //#swagger.tags = ['Admin']

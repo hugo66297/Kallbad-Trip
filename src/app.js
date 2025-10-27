@@ -21,16 +21,25 @@ app.use(helmet({
   contentSecurityPolicy: {
     useDefaults: true,
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'https://unpkg.com'],
-      styleSrc: ["'self'", 'https://unpkg.com', "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
-      connectSrc: ["'self'", 'https://unpkg.com', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
-      fontSrc: ["'self'", 'https://unpkg.com'],
-      objectSrc: ["'none'"],
-    },
-  })
-);
+      "script-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://unpkg.com",
+        "https://tile.openstreetmap.org"
+      ],
+      "connect-src": ["'self'", "https://unpkg.com"],
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://tile.openstreetmap.org",
+        "https://*.tile.openstreetmap.org",
+        "https://unpkg.com"
+      ],
+      "object-src": ["'none'"]
+    }
+  }
+}));
+
 
 
 //Express App instance
@@ -41,7 +50,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(logger.dev, logger.combined);
 app.use(cookieParser());
 app.use(cors());
-
 
 
 //Swagger Configuration & Documentation

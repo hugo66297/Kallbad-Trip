@@ -3,13 +3,12 @@ body{
     padding:0;
     background-color: rgb(220, 219, 219);
     font-family: Arial, sans-serif;
-    background-color: rgb(220, 219, 219);
-    font-family: Arial, sans-serif;
 }
 
 /* Header specific style (do not style all divs globally) */
 .site-header{
-    background-color: rgb(2, 99, 179);
+    /* Dark header for a modern look */
+    background-color: #0b0b0d; /* very dark */
     margin: 0;
     padding: 1rem 2rem;
     display: flex;

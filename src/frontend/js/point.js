@@ -199,13 +199,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 clone.querySelector('.review-rating').innerHTML = starsHTML;
                 clone.querySelector('.review-comment').textContent = r.review_text;
-                clone.querySelector('.review-date').textContent = `by user #${r.user_id} · ${new Date(r.created_at).toLocaleDateString()}`;
+                clone.querySelector('.review-date').innerHTML = `by <strong>${r.username}</strong> · ${new Date(r.created_at).toLocaleDateString()}`;
                 
 
                 reviewsList.appendChild(clone);
             });
         } else {
-            container.innerHTML = `<div class="card"><h3>Reviews</h3><p class="muted">Unable to load reviews.</p></div>`;
+            container.innerHTML = `<div class=s"card"><h3>Reviews</h3><p class="muted">Unable to load reviews.</p></div>`;
             return;
         }
     }

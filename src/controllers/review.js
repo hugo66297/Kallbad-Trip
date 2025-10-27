@@ -13,6 +13,12 @@ module.exports = {
         //get all reviews from locationID
         const reviews = await db.query(`SELECT r.id, r.user_id, r.rating, r.review_text, r.created_at FROM reviews r WHERE r.site_api_id = $1`, [locationID]);
 
+        //chainage pour avoir le nom d'utilisateur pour chaque review
+        for (const review of reviews.rows) await (async () => {
+            const username = await db.query(`SELECT u.username FROM users u WHERE u.id = $1`, [review.user_id]);
+            review.username = username.rows[0].username;
+        })();
+
         res.json({status:true, message:'Get all reviews from location', data: reviews.rows});
     },
     async addReview(req,res){

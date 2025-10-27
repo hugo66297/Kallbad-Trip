@@ -249,6 +249,16 @@ input {
     border-radius: 8px;
     font-size: 14px;
 }
+.popup textarea {
+    width: 80%;
+    height: 100px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+}
 /*ADMIN TABLE*/
 th {
     text-align:left;

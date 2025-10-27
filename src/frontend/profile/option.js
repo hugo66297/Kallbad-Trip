@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             const editRBtn = clone.querySelector('.editRBtn');
             const deleteRBtn = clone.querySelector('.deleteRBtn');
             editRBtn.addEventListener('click', () => {
-                alert('Edit review feature not implemented yet.');
+                editComment(r, userData);
             });
             deleteRBtn.addEventListener('click', async () => {
                 const confirmDelete = confirm("Are you sure you want to delete this review? This action is irreversible.");
@@ -346,18 +346,70 @@ document.addEventListener('DOMContentLoaded', async() => {
                         reviewError.textContent = 'Error: ' + delResp.message;
                         reviewError.style.display = 'block';
                     } else {
-                        const usrRes = await (await fetch('/api/manage/user/' + encodeURIComponent(userData.user.id), { method: 'GET' })).json();
-                        if(!usrRes.status){
-                            reviewError.textContent = usrRes.message;
-                            reviewError.style.display = 'block';
-                        } else {
-                            displayReviews(usrRes.data);
-                        }
+                        updateData(userData.user.id);
+
                     }
                 }
             });
 
             reviewsList.appendChild(clone);
         });
+    }
+    function editComment(review, userData){
+        const editReviewPopup = document.getElementById('editAdminReview');
+        editReviewPopup.style.display = 'block';
+
+        const ratingInput = document.getElementById('currentRating');
+        const commentInput = document.getElementById('currentComment');
+
+        const butCancel = document.getElementById('butCancelChangeReview');
+        const butSubmit = document.getElementById('butSubmitChangeReview');
+
+        const reviewError = document.getElementById('reviewChangeError');
+
+        ratingInput.value = review.rating;
+        commentInput.value = review.review_text;
+
+        editReviewPopup.addEventListener('click', (e) => {
+            if (e.target === editReviewPopup) {
+                editReviewPopup.style.display = 'none';
+            }
+        });
+        butCancel.onclick = () => {
+            editReviewPopup.style.display = 'none';
+        };
+        
+        butSubmit.onclick = async () => {
+            const newRating = ratingInput.value;
+            const newComment = commentInput.value;
+            const editRevResp = await (await fetch('/api/review/' + encodeURIComponent(review.id), {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    rating: newRating,
+                    review_text: newComment
+                })
+            })).json();
+            if (!editRevResp.status) {
+                reviewError.textContent = editRevResp.message;
+                reviewError.style.display = 'block';
+            } else {
+                editReviewPopup.style.display = 'none';
+                updateData(userData.user.id);
+                
+            }
+        };
+    }
+    async function updateData(id){
+        const reviewError = document.getElementById('reviewChangeError');
+        const usrRes = await (await fetch('/api/manage/user/' + encodeURIComponent(id), { method: 'GET' })).json();
+        if(!usrRes.status){
+            reviewError.textContent = usrRes.message;
+            reviewError.style.display = 'block';
+        } else {
+            displayReviews(usrRes.data);
+        }
     }
 });

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kallbad Trip</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="center-wrap">
+    <div class="auth-box" role="dialog" aria-labelledby="authTitle">
+        
+        <h2 id="authTitle">Login</h2>
+        <form id="authForm">
+            <input id="username" name="username" type="text" placeholder="Username" style="display: none;">
+            <input id="email" name="email" type="email" placeholder="Email" required>
+            <input id="password" name="password" type="password" placeholder="Password" required>
+
+            <div class="name-row" id="nameRow" style="display:none">
+                <input id="firstName" name="firstName" type="text" placeholder="First name">
+                <input id="lastName" name="lastName" type="text" placeholder="Last name">
+            </div>
+
+            <button type="submit" id="submitBtn">Login</button>
+        </form>
+
+        <p class="switch" id="switchText">
+            Don't have an account?
+            <a id="toggleLink">Register here</a>
+        </p>
+        <p id="perror" class="perror"></p>
+    </div>
+</div>
+<script src="connect.js"></script>
+</body>
+</html>

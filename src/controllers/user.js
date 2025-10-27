@@ -74,6 +74,14 @@ module.exports = {
             return;
         } throw new CodeError("Wrong password", status.UNAUTHORIZED);
     },
+    async checkAuth(req,res){
+        //#swagger.tags = ['Users']
+        //#swagger.summary = 'Endpoint to check if user is authenticated and retrieve data'
+        
+        const data = await db.query(`SELECT username, email, first_name, last_name, role, is_active FROM users WHERE email = $1`, [req.login.email]);
+
+        res.json({status:true, message:'User is authenticated', data: data.rows[0]});
+    },
     async logout(req,res){
         //#swagger.tags = ['Users']
         //#swagger.summary = 'Endpoint to logout'
@@ -133,14 +141,17 @@ module.exports = {
             const existing = up.rows[0];
             if(existing) throw new CodeError("Email already used", status.CONFLICT);
         }
-
+        // Handle null for firstname and lastname
+        var boolFN = userModified.hasOwnProperty('firstname') && userModified.firstname === null;
+        var boolLN = userModified.hasOwnProperty('lastname') && userModified.lastname === null;
+        
         // Update user
         if(userModified.password){
             userModified.passhash = await bcrypt.hash(req.body.password, 10);
         }
         const updatedUser = await db.query(
             `UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4, password_hash = $5 WHERE id = $6`,
-            [userModified.pseudo ? userModified.pseudo : oldUser.username, userModified.email ? userModified.email : oldUser.email, userModified.firstname ? userModified.firstname.charAt(0).toUpperCase() + userModified.firstname.slice(1).toLowerCase() : oldUser.first_name, userModified.lastname ? userModified.lastname.charAt(0).toUpperCase() + userModified.lastname.slice(1).toLowerCase() : oldUser.last_name, userModified.passhash ? userModified.passhash : oldUser.password_hash, oldUser.id]
+            [userModified.pseudo ? userModified.pseudo : oldUser.username, userModified.email ? userModified.email : oldUser.email, boolFN ? null : (userModified.firstname ? userModified.firstname.charAt(0).toUpperCase() + userModified.firstname.slice(1).toLowerCase() : oldUser.first_name), boolLN ? null : (userModified.lastname ? userModified.lastname.charAt(0).toUpperCase() + userModified.lastname.slice(1).toLowerCase() : oldUser.last_name), userModified.passhash ? userModified.passhash : oldUser.password_hash, oldUser.id]
         )
         // update cookie if email or pseudo changed
         if(userModified.pseudo || userModified.email){
@@ -186,12 +197,13 @@ module.exports = {
     },
     async getUserInfos(req,res){
         //#swagger.tags = ['Admin']
-        //#swagger.summary = 'Endpoint to get all reviews from a user'
+        //#swagger.summary = 'Endpoint to get all reviews from a user and the user infos'
 
         const r = await db.query(`SELECT id, site_api_id, rating, review_text,created_at FROM reviews WHERE user_id = $1 ORDER BY id`,[req.params.uid]);
         const reviews = r.rows;
-
-        res.json({status:true, message:'User infos fetched', data: reviews});
+        const u = await db.query(`SELECT id, username, role, is_active FROM users WHERE id = $1`, [req.params.uid]);
+        const user = u.rows[0];
+        res.json({status:true, message:'User infos fetched', data: {reviews: reviews, user: user}});
     },
     async changeUserStatus(req,res){
         //#swagger.tags = ['Admin']

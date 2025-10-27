@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="style.css">
+    <title>Profile</title>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" aria-label="Profile navigation">
+            <div class="brand">
+                <div class="logo">KT</div>
+                <div>
+                    <div class="title">Kallbad-Trip</div>
+                    <div class="subtitle">User profile</div>
+                </div>
+            </div>
+
+            <nav role="navigation" aria-label="Left menu">
+                <ul class="menu" role="menu">
+                    <li role="none">
+                        <a href="#overview" class="active" role="menuitem" aria-current="page">
+                            <span class="icon" aria-hidden="true">👤</span>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li class="adminOpt" role="none">
+                        <a href="#settings" role="menuitem">
+                            <span class="icon" aria-hidden="true">⚙️</span>
+                            <span>Manage users</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <section class="card header" id="overview">
+                <div class="profile">
+                    <div class="avatar" id="headerAvatar" aria-hidden="true"></div>
+                    <div class="meta">
+                        <div class="name" id="headerName"></div>
+                        <div class="role" id="headerRole"></div>
+                        <div class="ban" id="headerBan">Your account is currently banned. You can no longer leave or edit reviews.</div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="butLogout" class="btn primary" type="button">Log out</button>
+                </div>
+            </section>
+
+            <section class="section overview">
+
+                <div class="card">
+                    <h3 style="margin:0 0 12px 0">Account details</h3>
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" value="" />
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" value="" />
+                    </div>
+
+                    <div class="col2">
+                        <div class="field">
+                            <label for="firstname">First name</label>
+                            <input id="firstname" value="" />
+                        </div>
+                        <div class="field">
+                            <label for="lastname">Last name</label>
+                            <input id="lastname" value="" />
+                        </div>
+                    </div>
+
+                    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+                        <button id="butChangeInfo" class="btn primary" type="button" style="margin-left:8px">Save changes</button>
+                    </div>
+                    <p class="errormessage" id="profileError"></p>
+                </div>
+
+                <aside class="card" aria-labelledby="security">
+                    <h4 id="security" style="margin-top:0">Security</h4>
+                    <p style="color:var(--muted);font-size:14px">In this security corner, you can change your password or delete your account permanently</p>
+
+                    <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-weight:600">Password</div>
+                                <div style="color:var(--muted);font-size:13px">Change your password</div>
+                            </div>
+                            <button id="butChangePswd" class="btn ghost" type="button">Change</button>
+                        </div>
+
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-weight:600">Account</div>
+                                <div style="color:var(--muted);font-size:13px">Delete your account permanently</div>
+                            </div>
+                            <button id="butDelAccount" class="btn primary" type="button">Delete</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <div id="changePswdPopup" class="popup">
+                    <div class="popupContent">
+                        <h3>Change Password</h3>
+                        <div >
+                            <label for="currentPswd">Current Password</label>
+                            <input id="currentPswd" type="password" />
+                        </div>
+                        <div>
+                            <label for="newPswd">New Password</label>
+                            <input id="newPswd" type="password" />
+                        </div>
+                        <div>
+                            <label for="confirmNewPswd">Confirm New Password</label>
+                            <input id="confirmNewPswd" type="password" />
+                        </div>
+                        <div>
+                            <button id="butCancelChangePswd" class="btn ghost" type="button">Cancel</button>
+                            <button id="butSubmitChangePswd" class="btn primary" type="button">Change Password</button>
+                        </div>
+                        <p id="pswdChangeError" class="errormessage"></p>
+                    </div>
+                </div>
+
+            </section>
+            <section class="section manageusers">
+                <div class="card">
+                    <h3 style="margin:0 0 12px 0">Manage users</h3>
+                    <div class="users-table" style="overflow:auto">
+                        <table id="usersTable" style="width:100%;border-collapse:collapse">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Active</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <p id="usersError" class="errormessage"></p>
+                    </div>
+                </div>
+
+                <div id="manageUR" class="card reviews">
+                    <h3 id="titlecard"></h3>
+                        <div class="toggle-container">
+                            <label class="toggle">
+                                <input type="checkbox" id="toggleAdmin">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="toggleLabel">Admin Role</span>
+                            
+                            <label class="toggle">
+                                <input type="checkbox" id="toggleActive">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="toggleActive">Ban user</span>
+
+                             <button id="usrStatusChange" class="btn primary" type="button">Save</button>
+                        </div>
+                        <h3 id="reviewsTitle">Reviews</h3>
+                        <div class="reviews-list"></div>
+                        <p id="reviewError" class="errormessage"></p>
+
+                        <div id="editAdminReview" class="popup">
+                            <div class="popupContent">
+                                <h3>Edit Review</h3>
+                                <div >
+                                    <label for="currentRating"></label>
+                                    <input id="currentRating" type="number" min="1" max="5" />
+                                </div>
+                                <div>
+                                    <label for="currentComment"></label>
+                                    <textarea id="currentComment"></textarea>
+                                </div>
+                                <div>
+                                    <button id="butCancelChangeReview" class="btn ghost" type="button">Cancel</button>
+                                    <button id="butSubmitChangeReview" class="btn primary" type="button">Edit Review</button>
+                                </div>
+                                <p id="reviewChangeError" class="errormessage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="option.js"></script>
+    <div id="cloneReview">
+        <div class="review-content">
+            <div class="review-rating"></div>
+            <div class="review-comment"></div>
+        </div>
+        <div class="review-actions"></div>
+    </div>
+</body>
+</html>

@@ -8,12 +8,13 @@
 </head>
 <body>
     <div class="site-header">
-    <h1>Kallbad Trip</h1>
+    <h1><a href="./index.html">Kallbad Trip</a></h1>
     </div>
 
         <div class="main">
             <p id="status">Loading...</p>
             <div id="siteInfo"></div>
+            <div id="reviewsContainer"></div>
             <p><a class="back-link" href="./index.html">← Back to map</a></p>
         </div>
 
@@ -58,6 +59,8 @@
                             </div>
                         `;
 
+                        // Load reviews for this site
+                        renderReviews(id);
                         return;
                     }
 
@@ -80,6 +83,8 @@
                             </div>
                         `;
 
+                        // After rendering basic info, also render reviews section placeholder
+                        renderReviews(id);
                         return;
                     }
 
@@ -94,6 +99,59 @@
 
             // Run on load
             document.addEventListener('DOMContentLoaded', renderSite);
+
+            // Fetch and render reviews for a site
+            async function renderReviews(siteId){
+                const container = document.getElementById('reviewsContainer');
+                container.innerHTML = `<div class="card"><h3>Reviews</h3><p class="muted">Loading reviews...</p></div>`;
+                try{
+                            const res = await fetch(`http://localhost:3000/api/locations/${encodeURIComponent(siteId)}/reviews`);
+                            const json = await res.json();
+                            let reviews = json.data || [];
+
+                            function renderReviewItems(arr){
+                                return arr.map(r => ` <div class="review-item"><div class="meta">${r.rating ? 'Rating: '+r.rating+' · ' : ''}by user #${r.user_id || 'local'} · ${new Date(r.created_at).toLocaleDateString()}</div><div class="text">${r.review_text}</div></div>`).join('');
+                            }
+
+                            const html = [
+                                `<div class="card">
+                                    <h3>Reviews</h3>
+                                    <form id="reviewForm" class="review-form">
+                                        <textarea name="review" placeholder="Write your review..."></textarea>
+                                        <br/>
+                                        <button type="submit">Submit review</button>
+                                        <div class="review-note">Reviews submitted here are saved locally.</div>
+                                    </form>`,
+                                reviews.length === 0 ? `<p class="muted">No reviews yet.</p>` : ``,
+                                `<div id="reviewList">` + renderReviewItems(reviews) + `</div>`,
+                                `</div>`
+                            ].join('\n');
+
+                            container.innerHTML = html;
+
+                            // Attach form handler to store reviews locally (no auth/post)
+                            const form = document.getElementById('reviewForm');
+                            const listDiv = document.getElementById('reviewList');
+                            form.addEventListener('submit', (ev) => {
+                                ev.preventDefault();
+                                const txt = form.querySelector('textarea').value.trim();
+                                if(!txt) return;
+                                const newReview = {
+                                    user_id: 'you',
+                                    rating: null,
+                                    review_text: txt,
+                                    created_at: new Date().toISOString()
+                                };
+                                // prepend locally
+                                reviews.unshift(newReview);
+                                listDiv.innerHTML = renderReviewItems(reviews);
+                                form.reset();
+                            });
+                }catch(err){
+                    container.innerHTML = `<div class="card"><h3>Reviews</h3><p class="muted">Unable to load reviews.</p></div>`;
+                    console.error('Error loading reviews', err);
+                }
+            }
         </script>
         
 </body>

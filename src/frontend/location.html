@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="./css/stylesheet.css">
 </head>
 <body>
-    <div class="site-header">
-    <h1><a href="./index.html">Kallbad Trip</a></h1>
-    </div>
+        <div class="site-header">
+        <h1><a href="./index.html">Kallbad Trip</a></h1>
+        <div class="header-actions">
+            <a class="login-button" href="./login.html">Login</a>
+        </div>
+        </div>
 
         <div class="main">
             <p id="status">Loading...</p>
@@ -43,7 +46,10 @@
                         statusEl.textContent = '';
                         infoEl.innerHTML = `
                             <div class="card">
-                                <h2>${site.name || '—'}</h2>
+                                <div class="fav-container">
+                                    <h2>${site.name || '—'}</h2>
+                                    <button id="favBtn" class="fav-button">Add to favorites</button>
+                                </div>
                                 <p class="muted"><strong>ID:</strong> ${site.id || '—'}</p>
                                 <p><strong>Description:</strong> ${site.description || 'No description available.'}</p>
                                 <p><strong>Summary:</strong> ${site.summary || '—'}</p>
@@ -58,6 +64,28 @@
                                 <p>${site.administrativeAuthority?.contactInfo?.email ? `<a href="mailto:${site.administrativeAuthority.contactInfo.email}">${site.administrativeAuthority.contactInfo.email}</a>` : ''}</p>
                             </div>
                         `;
+
+                        // Wire favorite button
+                        (function(){
+                            const favBtn = document.getElementById('favBtn');
+                            if(!favBtn) return;
+                            function getFavs(){ try { return JSON.parse(localStorage.getItem('kallbad_favs')||'[]'); } catch(e){ return []; } }
+                            function saveFavs(a){ localStorage.setItem('kallbad_favs', JSON.stringify(a)); }
+                            function isFav(id){ return getFavs().some(s=>s.id === id); }
+                            function update(){ favBtn.textContent = isFav(site.id)?'Remove favorite':'Add to favorites'; favBtn.classList.toggle('removing', isFav(site.id)); }
+                            favBtn.addEventListener('click', ()=>{
+                                const favs = getFavs();
+                                if(isFav(site.id)){
+                                    saveFavs(favs.filter(s=>s.id !== site.id));
+                                } else {
+                                    const item = { id: site.id, name: site.name || '', coordinates: site.coordinates || null };
+                                    favs.unshift(item);
+                                    saveFavs(favs);
+                                }
+                                update();
+                            });
+                            update();
+                        })();
 
                         // Load reviews for this site
                         renderReviews(id);
@@ -76,12 +104,37 @@
                         statusEl.textContent = '';
                         infoEl.innerHTML = `
                             <div class="card">
-                                <h2>${found.name || '—'}</h2>
+                                <div class="fav-container">
+                                    <h2>${found.name || '—'}</h2>
+                                    <button id="favBtn" class="fav-button">Add to favorites</button>
+                                </div>
                                 <p class="muted"><strong>ID:</strong> ${found.id || '—'}</p>
                                 <p><strong>Coordinates:</strong> ${found.coordinates?.latitude || '—'}, ${found.coordinates?.longitude || '—'}</p>
                                 <p>Detailed profile is not available for this site, but here are the basic data from the listing.</p>
                             </div>
                         `;
+
+                        // Wire favorite button for fallback card and render reviews
+                        (function(){
+                            const favBtn = document.getElementById('favBtn');
+                            if(!favBtn) return;
+                            function getFavs(){ try { return JSON.parse(localStorage.getItem('kallbad_favs')||'[]'); } catch(e){ return []; } }
+                            function saveFavs(a){ localStorage.setItem('kallbad_favs', JSON.stringify(a)); }
+                            function isFav(id){ return getFavs().some(s=>s.id === id); }
+                            function update(){ favBtn.textContent = isFav(found.id)?'Remove favorite':'Add to favorites'; favBtn.classList.toggle('removing', isFav(found.id)); }
+                            favBtn.addEventListener('click', ()=>{
+                                const favs = getFavs();
+                                if(isFav(found.id)){
+                                    saveFavs(favs.filter(s=>s.id !== found.id));
+                                } else {
+                                    const item = { id: found.id, name: found.name || '', coordinates: found.coordinates || null };
+                                    favs.unshift(item);
+                                    saveFavs(favs);
+                                }
+                                update();
+                            });
+                            update();
+                        })();
 
                         // After rendering basic info, also render reviews section placeholder
                         renderReviews(id);

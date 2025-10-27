@@ -53,8 +53,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 `;
 
-                // Wire favorite button
-                
+                // favorite button
+                const favBtn = document.getElementById('favBtn');
+                const favresp = await (await fetch('/api/user/location', {
+                    method: 'GET'
+                })).json();
+                if(favresp.status){
+                    if(favresp.data.some(loc => loc.site_api_id === id)){
+                        favBtn.textContent = 'Remove from favorites';
+                        favBtn.style.backgroundColor = '#a30b0b';
+                    } else {
+                        favBtn.textContent = 'Add to favorites';
+                        favBtn.style.backgroundColor = '#0b69a3';
+                    }
+                }
+                favBtn.addEventListener('click', async () => {
+                    if (!isLogged){
+                        window.location.href = '/login';
+                    } else {
+                        if(favBtn.textContent === 'Add to favorites'){
+                            const addFav = await (await fetch('/api/user/location/' + encodeURIComponent(id), {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })).json();
+                            if(addFav.status){
+                                favBtn.textContent = 'Remove from favorites';
+                                favBtn.style.backgroundColor = '#a30b0b';
+                            }
+                        } else {
+                            const remFav = await (await fetch('/api/user/location/' + encodeURIComponent(id), {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })).json();
+                            if(remFav.status){
+                                favBtn.textContent = 'Add to favorites';
+                                favBtn.style.backgroundColor = '#0b69a3';
+                            }
+                        }
+                    }
+                });
 
                 // Load reviews for this site
                 renderReviews(id);

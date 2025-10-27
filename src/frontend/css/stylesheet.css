@@ -9,23 +9,45 @@ body{
 
 /* Header specific style (do not style all divs globally) */
 .site-header{
-/* Header specific style (do not style all divs globally) */
-.site-header{
     background-color: rgb(2, 99, 179);
-    margin: 0;
-    padding: 1rem 0;
     margin: 0;
     padding: 1rem 0;
 }
 
 .site-header h1{
-.site-header h1{
     color: rgba(201, 171, 50);
     font-weight: bold;
     padding-left: 2rem;
     margin: 0;
-    margin: 0;
+    letter-spacing: 0.5px;
 }
+
+/* Card styles for details */
+.card{
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+    padding: 1.25rem;
+    margin: 1rem 0;
+    max-width: 900px;
+    width: 100%;
+}
+
+.card h2{ margin-top:0; margin-bottom:0.5rem; }
+.card p{ margin: 0.25rem 0; color: #222; }
+.card .muted{ color: #6b7280; font-size: 0.95rem; }
+
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.back-link{ color:#0b69a3; text-decoration:none; font-weight:600; }
+.back-link:hover{ text-decoration:underline; }
 
 /* Map container must have an explicit height for Leaflet to render */
 #map{

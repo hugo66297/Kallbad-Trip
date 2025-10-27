@@ -150,7 +150,7 @@
                 </div>
 
                 <div id="manageUR" class="card reviews">
-                    <h3 id="titlecard" style="margin:0 0 12px 0"></h3>
+                    <h3 id="titlecard"></h3>
                         <div class="toggle-container">
                             <label class="toggle">
                                 <input type="checkbox" id="toggleAdmin">
@@ -166,11 +166,20 @@
 
                              <button id="usrStatusChange" class="btn primary" type="button">Save</button>
                         </div>
+                        <h3 id="reviewsTitle">Reviews</h3>
+                        <div class="reviews-list"></div>
                     </div>
                 </div>
             </section>
         </main>
     </div>
     <script src="option.js"></script>
+    <div id="cloneReview">
+        <div class="review-content">
+            <div class="review-rating"></div>
+            <div class="review-comment"></div>
+        </div>
+        <div class="review-actions"></div>
+    </div>
 </body>
 </html>

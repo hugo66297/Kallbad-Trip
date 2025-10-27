@@ -12,9 +12,9 @@
     </div>
 
         <div class="main">
-            <p id="status">Chargement...</p>
+            <p id="status">Loading...</p>
             <div id="siteInfo"></div>
-            <p><a href="./index.html">← Retour à la carte</a></p>
+            <p><a class="back-link" href="./index.html">← Back to map</a></p>
         </div>
 
         <script>
@@ -25,41 +25,74 @@
                 const infoEl = document.getElementById('siteInfo');
 
                 if (!id) {
-                    statusEl.textContent = 'Aucun site sélectionné. Revenez à la carte et cliquez sur "Voir la fiche" pour un site.';
+                    statusEl.textContent = 'No site selected. Return to the map and click "View details" on a marker.';
                     return;
                 }
 
                 try {
-                    statusEl.textContent = 'Récupération des informations...';
-                    const res = await fetch(`http://localhost:3000/api/bathing-waters/${encodeURIComponent(id)}`);
-                    const json = await res.json();
+                    statusEl.textContent = 'Fetching site information...';
 
-                    if (!res.ok || !json.success) {
-                        statusEl.textContent = 'Impossible de récupérer les informations du site.';
-                        console.error('Fetch error', json);
+                    // Fetch profile only — results/monitoring call removed because it is unreliable
+                    const profileRes = await fetch(`http://localhost:3000/api/bathing-waters/${encodeURIComponent(id)}/profile`).catch(e => ({ ok:false, json: async ()=> ({ success:false, error: e }) }));
+                    const profileJson = profileRes && profileRes.ok ? await profileRes.json() : { success: false };
+
+                    // If profile succeeded
+                    if (profileJson && profileJson.success) {
+                        const site = profileJson.data;
+                        statusEl.textContent = '';
+                        infoEl.innerHTML = `
+                            <div class="card">
+                                <h2>${site.name || '—'}</h2>
+                                <p class="muted"><strong>ID:</strong> ${site.id || '—'}</p>
+                                <p><strong>Description:</strong> ${site.description || 'No description available.'}</p>
+                                <p><strong>Summary:</strong> ${site.summary || '—'}</p>
+                                <p><strong>Water type:</strong> ${site.waterType?.name || '—'}</p>
+                                <p><strong>Coordinates:</strong> ${site.coordinates?.latitude || '—'}, ${site.coordinates?.longitude || '—'}</p>
+                                <h3>Bathing season</h3>
+                                <p>${site.bathingSeason ? `${site.bathingSeason.startDate || ''} → ${site.bathingSeason.endDate || ''} (${site.bathingSeason.isActive ? 'active' : 'inactive'})` : 'Information not available'}</p>
+                                <h3>Pollution sources</h3>
+                                <p>${(site.pollutionSources && site.pollutionSources.length) ? site.pollutionSources.join(', ') : 'No information'}</p>
+                                <h3>Administrative authority</h3>
+                                <p>${site.administrativeAuthority?.contactInfo?.name || '—'}</p>
+                                <p>${site.administrativeAuthority?.contactInfo?.email ? `<a href="mailto:${site.administrativeAuthority.contactInfo.email}">${site.administrativeAuthority.contactInfo.email}</a>` : ''}</p>
+                            </div>
+                        `;
+
                         return;
                     }
 
-                    const site = json.data;
-                    statusEl.textContent = '';
+                    // If profile failed, try to fallback to the map listing for basic info
+                    console.warn('Profile endpoint failed or returned no data:', profileJson);
+                    statusEl.textContent = 'Detailed profile unavailable — trying to fetch basic information...';
 
-                    infoEl.innerHTML = `
-                        <h2>${site.name || '—'}</h2>
-                        <p><strong>ID :</strong> ${site.id || '—'}</p>
-                        <p><strong>Description :</strong> ${site.description || 'Aucune description disponible.'}</p>
-                        <p><strong>Type d'eau :</strong> ${site.waterType?.name || '—'}</p>
-                        <p><strong>Coordonnées :</strong> ${site.coordinates?.latitude || '—'}, ${site.coordinates?.longitude || '—'}</p>
-                        <h3>Qualité de l'eau</h3>
-                        <p>${site.waterQuality?.currentClassification?.qualityClassIdText || 'Information non disponible'}</p>
-                    `;
+                    const listRes = await fetch('http://localhost:3000/api/bathing-waters?limit=5000&page=1');
+                    const listJson = await listRes.json();
+                    const found = (listJson.data || []).find(s => s.id === id);
+
+                    if (found) {
+                        statusEl.textContent = '';
+                        infoEl.innerHTML = `
+                            <div class="card">
+                                <h2>${found.name || '—'}</h2>
+                                <p class="muted"><strong>ID:</strong> ${found.id || '—'}</p>
+                                <p><strong>Coordinates:</strong> ${found.coordinates?.latitude || '—'}, ${found.coordinates?.longitude || '—'}</p>
+                                <p>Detailed profile is not available for this site, but here are the basic data from the listing.</p>
+                            </div>
+                        `;
+
+                        return;
+                    }
+
+                    statusEl.textContent = 'Unable to retrieve site information.';
+                    console.error('Profile fetch result:', profileJson);
 
                 } catch (err) {
-                    statusEl.textContent = 'Erreur lors de la récupération des données.';
+                    statusEl.textContent = 'Error fetching data.';
                     console.error(err);
                 }
             }
 
-            // Lancer au chargement
+            // Run on load
             document.addEventListener('DOMContentLoaded', renderSite);
         </script>
         

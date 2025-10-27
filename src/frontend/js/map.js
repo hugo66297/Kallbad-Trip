@@ -70,7 +70,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         const { latitude, longitude } = site.coordinates;
         L.marker([latitude, longitude])
           .addTo(markersLayer)
-          .bindPopup(`<div><b>${site.name}</b><br/><a href="./location.html?id=${encodeURIComponent(site.id)}">Voir la fiche</a></div>`);
+          .bindPopup(`<div><b>${site.name}</b><br/><a href="./location.html?id=${encodeURIComponent(site.id)}">View details</a></div>`);
         counter++;
       });
 

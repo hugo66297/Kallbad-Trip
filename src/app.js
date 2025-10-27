@@ -15,6 +15,33 @@ const { error } = require('console');
 //Instantiate Express App
 const app = express();
 
+// Configure Helmet and Content Security Policy
+// Allow OpenStreetMap tiles and unpkg (Leaflet) for scripts, styles, images and connections
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      "script-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://unpkg.com",
+        "https://tile.openstreetmap.org"
+      ],
+      "connect-src": ["'self'", "https://unpkg.com"],
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://tile.openstreetmap.org",
+        "https://*.tile.openstreetmap.org",
+        "https://unpkg.com"
+      ],
+      "object-src": ["'none'"]
+    }
+  }
+}));
+
+
+
 //Express App instance
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -23,7 +50,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(logger.dev, logger.combined);
 app.use(cookieParser());
 app.use(cors());
-app.use(helmet());
+
 
 //Swagger Configuration & Documentation
 if (process.env.NODE_ENV == 'dev') {
@@ -56,4 +83,6 @@ app.use((err, req, res, next) => {
     next(err);
 });
 app.use(errorHandler());
+
+
 module.exports = app;

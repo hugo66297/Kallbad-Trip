@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kallbad Trip</title>
+    <link rel="stylesheet" href="./css/stylesheet.css">
+</head>
+<body>
+        <div class="site-header">
+        <h1><a href="./index.html">Kallbad Trip</a></h1>
+        <div class="header-actions">
+            <a id="butLogin" class="login-button" href=""></a>
+        </div>
+        </div>
+
+        <div class="main">
+            <p id="status">Loading...</p>
+            <div id="siteInfo"></div>
+            <div class="card">
+                <h2>Leave a Review 😉</h2>
+                <form id="reviewForm" class="review-form">
+                    <input id="reviewRating" type="number" min="1" max="5" placeholder="Rating (1-5)" required>
+                    <textarea id="reviewComment" name="review" placeholder="Write your review..."></textarea>
+                    <button id="submitReviewBtn" type="submit">Submit review</button>
+                </form>
+                <div id="reviewList"></div>
+            </div>
+            <p><a class="back-link" href="./index.html">← Back to map</a></p>
+
+            <div id="editUsrReview" class="popup">
+                <div class="popupContent">
+                    <h3>Edit Review</h3>
+                    <div >
+                        <label for="currenteditRating"></label>
+                        <input id="currenteditRating" type="number" min="1" max="5" />
+                    </div>
+                    <div>
+                        <label for="currenteditComment"></label>
+                        <textarea id="currenteditComment"></textarea>
+                    </div>
+                    <div>
+                        <button id="butCancelChangeReview" class="btn ghost" type="button">Cancel</button>
+                        <button id="butSubmitChangeReview" class="btn primary" type="button">Save</button>
+                    </div>
+                    <p id="reviewChangeError" class="errormessage"></p>
+                </div>
+            </div>
+        </div>
+        <script src="./js/point.js"></script>
+</body>
+<div id="reviewTemplate">
+    <div class="review-content">
+        <div class="review-date"></div>
+        <div class="review-rating"></div>
+        <div class="review-comment"></div>
+    </div>
+    <div class="review-actions"></div>
+</div>
+</html>

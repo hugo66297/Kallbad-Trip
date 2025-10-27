@@ -66,6 +66,51 @@
     },
     "/bathing-waters/{lid}/profile": {
       "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/bathing-waters/{id}/profile": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/bathing-waters/{id}/results": {
+      "get": {
         "tags": [
           "Bathing Waters"
         ],
@@ -200,6 +245,20 @@
         }
       }
     },
+    "/checkAuth": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint to check if user is authenticated and retrieve data",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/logout": {
       "get": {
         "tags": [
@@ -258,6 +317,105 @@
         ],
         "summary": "Endpoint to delete your account",
         "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/manage/user": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Endpoint to get all users informations",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/manage/user/{uid}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Endpoint to get all reviews from a user and the user infos",
+        "description": "",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Endpoint to change user status (ban/unban), (admin/user)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "is_active (true/false), role (admin/user)",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_active": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "role": {
+                  "type": "string",
+                  "example": "admin"
+                }
+              },
+              "required": [
+                "is_active",
+                "role"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Endpoint to delete a user by admin",
+        "description": "",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -379,6 +537,91 @@
           "Reviews"
         ],
         "summary": "Endpoint to delete a review",
+        "description": "",
+        "parameters": [
+          {
+            "name": "rid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/manage/review/{rid}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Admin endpoint to get a review by its ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "rid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Admin endpoint to modify a review by its ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "rid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "you can change rating and review_text",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "number",
+                  "example": 3
+                },
+                "review_text": {
+                  "type": "string",
+                  "example": "It is much better right now."
+                }
+              },
+              "required": [
+                "rating",
+                "review_text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Admin endpoint to delete a review by its ID",
         "description": "",
         "parameters": [
           {

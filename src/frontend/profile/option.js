@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', async() => {
             opt.style.display = 'block';
         });
     }
+    const logoKT = document.getElementById('logoKT');
+    logoKT.style.cursor = 'pointer';
+    logoKT.addEventListener('click', () => {
+        window.location.href = '/';
+    });
 
     const cardOverview = document.querySelector(".overview");
     const cardManageUsers = document.querySelector(".manageusers");

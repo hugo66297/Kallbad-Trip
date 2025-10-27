@@ -1,12 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kallbad Trip</title>
+    <link rel="stylesheet" href="./css/stylesheet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
 </head>
+
 <body>
-    <h1>Kallbad Trip</h1>
-    <p>Welcome to the Kallbad Trip planning page!</p>
+
+        <div class="site-header">
+            <h1><a href="./index.html">Kallbad Trip</a></h1>
+            <div class="header-actions">
+                <a id="butLogin" class="login-button" href=""></a>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="map-row">
+                <div class="map-card">
+                    <div class="card">
+                        <div id="map"></div>
+                    </div>
+                </div>
+
+                <div class="intro-card">
+                    <div class="card">
+                        <h2>About this project</h2>
+                        <p>
+                            Kallbad Trip started as a small student project built by three computer science students.
+                            We were fascinated by Sweden's tradition of cold-water bathing and wanted to explore it
+                            while learning how to design a database-backed web application.
+                        </p>
+                        <p>
+                            This site aggregates official bathing spot data and makes it easy to discover places to
+                            take a dip in Sweden. Browse the map, click markers to view details, save favorites
+                            and leave local reviews to share your experience with others.
+                        </p>
+                        <p class="muted">
+                            Enjoy exploring — and stay safe near the water. 🧊
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script src="./js/map.js"></script>
+    
 </body>
 </html>

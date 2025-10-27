@@ -6,64 +6,77 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-let markersLayer = L.layerGroup().addTo(map); // Contains all markers
-let lastBounds = null;
+// markersLayer and lastBounds are declared below (debounced loader)
 
 // Finding bathing waters in the current map view
-async function loadBathingWatersInView() {
-  const bounds = map.getBounds();
-  const north = bounds.getNorth();
-  const south = bounds.getSouth();
-  const east = bounds.getEast();
-  const west = bounds.getWest();
+  let markersLayer = L.layerGroup().addTo(map); // Contains all markers
+  let lastBounds = null;
+  let loadTimer = null;
+  const DEBOUNCE_MS = 300; // wait before calling server after interactions
+  const MIN_ZOOM_TO_LOAD = 5; // don't load markers when zoomed out too far
 
-  // avoid reloading if bounds haven't changed significantly
-  if (lastBounds && lastBounds.contains(bounds)) return;
-  lastBounds = bounds.pad(-0.2); // 20% margin
+  // Finding bathing waters in the current map view (debounced)
+  async function fetchBathingWatersForBounds(north, south, east, west) {
+    try {
+      // Ask server to filter by bounds; set a large limit so server returns all visible in one call
+      const params = new URLSearchParams();
+      params.append('bounds', JSON.stringify({ north, south, east, west }));
+      params.append('limit', '1000');
+      params.append('page', '1');
 
-  markersLayer.clearLayers();
-  console.log(`Loading visible sites from 27 pages...`);
-
-  const totalPages = 27;
-  let allSites = [];
-
-  try {
-    // Fetching ALL pages
-    const pagePromises = Array.from({ length: totalPages }, (_, i) =>
-      fetch(`http://localhost:3000/api/bathing-waters?page=${i + 1}`)
-        .then(res => res.json())
-        .then(json => json.data || [])
-        .catch(err => {
-          console.error(`Error at page ${i + 1}:`, err);
-          return [];
-        })
-    );
-
-    // Waiting for all pages
-    const allResults = await Promise.all(pagePromises);
-    allSites = allResults.flat();
-
-    let counter = 0;
-
-    // Filtering + adding to the map
-    allSites.forEach(site => {
-      if (!site.coordinates) return;
-      const { latitude, longitude } = site.coordinates;
-
-      // Only if the point is in the visible area
-      if (latitude < south || latitude > north || longitude < west || longitude > east) return;
-
-      L.marker([latitude, longitude])
-        .addTo(markersLayer)
-        .bindPopup(`<b>${site.name}</b>`);
-      counter++;
-    });
-
-    console.log(`${counter} visible sites added to the map (out of ${allSites.length} total).`);
-  } catch (err) {
-    console.error('Error loading data:', err);
+      const url = `http://localhost:3000/api/bathing-waters?${params.toString()}`;
+      console.log('Fetching visible sites from:', url);
+      const res = await fetch(url);
+      const json = await res.json();
+      return json.data || [];
+    } catch (err) {
+      console.error('Error fetching bathing waters for bounds:', err);
+      return [];
+    }
   }
-}
+
+  async function loadBathingWatersInView() {
+    // Debounce rapid map events
+    if (loadTimer) clearTimeout(loadTimer);
+
+    loadTimer = setTimeout(async () => {
+      const bounds = map.getBounds();
+      const zoom = map.getZoom();
+
+      if (zoom < MIN_ZOOM_TO_LOAD) {
+        // Optionally clear markers when too zoomed out to avoid clutter
+        markersLayer.clearLayers();
+        console.log('Zoom level too low, skipping load.');
+        return;
+      }
+
+      // avoid reloading if bounds haven't changed significantly
+      if (lastBounds && lastBounds.contains(bounds)) return;
+      lastBounds = bounds.pad(-0.2); // 20% margin
+
+      markersLayer.clearLayers();
+
+      const north = bounds.getNorth();
+      const south = bounds.getSouth();
+      const east = bounds.getEast();
+      const west = bounds.getWest();
+
+      // Fetch only the bathing waters inside current view using server-side filtering
+      const allSites = await fetchBathingWatersForBounds(north, south, east, west);
+
+      let counter = 0;
+      allSites.forEach(site => {
+        if (!site.coordinates) return;
+        const { latitude, longitude } = site.coordinates;
+        L.marker([latitude, longitude])
+          .addTo(markersLayer)
+          .bindPopup(`<div><b>${site.name}</b><br/><a href="./location.html?id=${encodeURIComponent(site.id)}">Voir la fiche</a></div>`);
+        counter++;
+      });
+
+      console.log(`${counter} visible sites added to the map (out of ${allSites.length} returned by server).`);
+    }, DEBOUNCE_MS);
+  }
 
 // --- Map events ---
 map.on('moveend', loadBathingWatersInView);

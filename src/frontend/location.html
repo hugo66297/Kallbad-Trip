@@ -11,13 +11,57 @@
     <h1>Kallbad Trip</h1>
     </div>
 
-    <div class="main">
-    <p>Welcome to the Kallbad Trip planning page !</p>
+        <div class="main">
+            <p id="status">Chargement...</p>
+            <div id="siteInfo"></div>
+            <p><a href="./index.html">← Retour à la carte</a></p>
+        </div>
 
-    <button type="button" onclick="window.location.href='./location.html'">Show Special Location</button>
-    </div>
+        <script>
+            async function renderSite() {
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('id');
+                const statusEl = document.getElementById('status');
+                const infoEl = document.getElementById('siteInfo');
 
-    <script src="./js/map.js"></script>
+                if (!id) {
+                    statusEl.textContent = 'Aucun site sélectionné. Revenez à la carte et cliquez sur "Voir la fiche" pour un site.';
+                    return;
+                }
+
+                try {
+                    statusEl.textContent = 'Récupération des informations...';
+                    const res = await fetch(`http://localhost:3000/api/bathing-waters/${encodeURIComponent(id)}`);
+                    const json = await res.json();
+
+                    if (!res.ok || !json.success) {
+                        statusEl.textContent = 'Impossible de récupérer les informations du site.';
+                        console.error('Fetch error', json);
+                        return;
+                    }
+
+                    const site = json.data;
+                    statusEl.textContent = '';
+
+                    infoEl.innerHTML = `
+                        <h2>${site.name || '—'}</h2>
+                        <p><strong>ID :</strong> ${site.id || '—'}</p>
+                        <p><strong>Description :</strong> ${site.description || 'Aucune description disponible.'}</p>
+                        <p><strong>Type d'eau :</strong> ${site.waterType?.name || '—'}</p>
+                        <p><strong>Coordonnées :</strong> ${site.coordinates?.latitude || '—'}, ${site.coordinates?.longitude || '—'}</p>
+                        <h3>Qualité de l'eau</h3>
+                        <p>${site.waterQuality?.currentClassification?.qualityClassIdText || 'Information non disponible'}</p>
+                    `;
+
+                } catch (err) {
+                    statusEl.textContent = 'Erreur lors de la récupération des données.';
+                    console.error(err);
+                }
+            }
+
+            // Lancer au chargement
+            document.addEventListener('DOMContentLoaded', renderSite);
+        </script>
         
 </body>
 </html>

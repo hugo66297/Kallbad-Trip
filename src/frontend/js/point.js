@@ -200,97 +200,101 @@ document.addEventListener('DOMContentLoaded', async () => {
                 clone.querySelector('.review-rating').innerHTML = starsHTML;
                 clone.querySelector('.review-comment').textContent = r.review_text;
                 var who = r.username;
-                if(r.username == isLogged.username)
-                {
-                    who = "you";
+                if(isLogged){
+                    if(r.username == isLogged.username)
+                    {
+                        who = "you";
+                    }
                 }
-                clone.querySelector('.review-date').innerHTML = `by <strong>${who}</strong> · ${new Date(r.created_at).toLocaleDateString()}`;
+                    clone.querySelector('.review-date').innerHTML = `by <strong>${who}</strong> · ${new Date(r.created_at).toLocaleDateString()}`;
 
-                const actionsDiv = clone.querySelector('.review-actions');
-                // If the logged-in user is the author of the review
-                if (isLogged.username === r.username) {
-                    actionsDiv.innerHTML = `
-                        <button id="editYRBtn" class="btn ghost editYRBtn" title="Edit">
-                            <!-- eye icon -->
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.2"/>
-                            </svg>
-                        </button>
-                        <button id="deleteYRBtn" class="btn ghost deleteYRBtn" title="Delete">
-                            <!-- trash icon -->
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path d="M3 6h18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>`;
-                
-                    //functions for edit and delete
-                    const editBtn = actionsDiv.querySelector('.editYRBtn');
-                    const deleteBtn = actionsDiv.querySelector('.deleteYRBtn');
+                    const actionsDiv = clone.querySelector('.review-actions');
+                    // If the logged-in user is the author of the review
+                if(isLogged){
+                    if (isLogged.username === r.username) {
+                        actionsDiv.innerHTML = `
+                            <button id="editYRBtn" class="btn ghost editYRBtn" title="Edit">
+                                <!-- eye icon -->
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.2"/>
+                                </svg>
+                            </button>
+                            <button id="deleteYRBtn" class="btn ghost deleteYRBtn" title="Delete">
+                                <!-- trash icon -->
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M3 6h18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>`;
                     
-                    editBtn.addEventListener('click', async () => {
-                        const editPopup = document.getElementById('editUsrReview');
-                        editPopup.style.display = 'block';
-
-                        const ratingInput = document.getElementById('currenteditRating');
-                        const commentInput = document.getElementById('currenteditComment');
-
-                        const saveBtn = document.getElementById('butSubmitChangeReview');
-                        const cancelBtn = document.getElementById('butCancelChangeReview');
+                        //functions for edit and delete
+                        const editBtn = actionsDiv.querySelector('.editYRBtn');
+                        const deleteBtn = actionsDiv.querySelector('.deleteYRBtn');
                         
-                        ratingInput.value = r.rating;
-                        commentInput.value = r.review_text;
+                        editBtn.addEventListener('click', async () => {
+                            const editPopup = document.getElementById('editUsrReview');
+                            editPopup.style.display = 'block';
 
-                        editPopup.addEventListener('click', (e) => {
-                            if (e.target === editPopup) {
+                            const ratingInput = document.getElementById('currenteditRating');
+                            const commentInput = document.getElementById('currenteditComment');
+
+                            const saveBtn = document.getElementById('butSubmitChangeReview');
+                            const cancelBtn = document.getElementById('butCancelChangeReview');
+                            
+                            ratingInput.value = r.rating;
+                            commentInput.value = r.review_text;
+
+                            editPopup.addEventListener('click', (e) => {
+                                if (e.target === editPopup) {
+                                    editPopup.style.display = 'none';
+                                }
+                            });
+                            cancelBtn.onclick = () => {
                                 editPopup.style.display = 'none';
+                            };
+                            saveBtn.onclick = async () => {
+                                const newRating = parseInt(ratingInput.value);
+                                const newComment = commentInput.value.trim();
+
+                                const modResp = await (await fetch(`/api/review/${encodeURIComponent(r.id)}`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        rating: newRating,
+                                        review_text: newComment
+                                    })
+                                })).json();
+                                if (modResp.status) {
+                                    editPopup.style.display = 'none';
+                                    // Reload reviews
+                                    renderReviews(siteId);
+                                } else {
+                                    alert('Failed to update review: ' + (modResp.error || 'Unknown error'));
+                                }
                             }
                         });
-                        cancelBtn.onclick = () => {
-                            editPopup.style.display = 'none';
-                        };
-                        saveBtn.onclick = async () => {
-                            const newRating = parseInt(ratingInput.value);
-                            const newComment = commentInput.value.trim();
 
-                            const modResp = await (await fetch(`/api/review/${encodeURIComponent(r.id)}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    rating: newRating,
-                                    review_text: newComment
-                                })
-                            })).json();
-                            if (modResp.status) {
-                                editPopup.style.display = 'none';
-                                // Reload reviews
-                                renderReviews(siteId);
-                            } else {
-                                alert('Failed to update review: ' + (modResp.error || 'Unknown error'));
-                            }
-                        }
-                    });
-
-                    deleteBtn.addEventListener('click', async () => {
-                        if (confirm('Are you sure you want to delete your review?')) {
-                            const delResp = await (await fetch(`/api/review/${encodeURIComponent(r.id)}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json'
+                        deleteBtn.addEventListener('click', async () => {
+                            if (confirm('Are you sure you want to delete your review?')) {
+                                const delResp = await (await fetch(`/api/review/${encodeURIComponent(r.id)}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })).json();
+                                if (delResp.status) {
+                                    // Reload reviews
+                                    renderReviews(siteId);
+                                } else {
+                                    alert('Failed to delete review: ' + (delResp.error || 'Unknown error'));
                                 }
-                            })).json();
-                            if (delResp.status) {
-                                // Reload reviews
-                                renderReviews(siteId);
-                            } else {
-                                alert('Failed to delete review: ' + (delResp.error || 'Unknown error'));
                             }
-                        }
-                    });
+                        });
+                    }
                 }
 
                 reviewsList.appendChild(clone);

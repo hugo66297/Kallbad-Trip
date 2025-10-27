@@ -17,9 +17,24 @@
         <div class="main">
             <p id="status">Loading...</p>
             <div id="siteInfo"></div>
-            <div id="reviewsContainer"></div>
+            <div class="card">
+                <h2>Leave a Review 😉</h2>
+                <form id="reviewForm" class="review-form">
+                    <input id="reviewRating" type="number" min="1" max="5" placeholder="Rating (1-5)" required>
+                    <textarea name="review" placeholder="Write your review..."></textarea>
+                    <button id="submitReviewBtn" type="submit">Submit review</button>
+                </form>
+                <div id="reviewList"></div>
+            </div>
             <p><a class="back-link" href="./index.html">← Back to map</a></p>
         </div>
         <script src="./js/point.js"></script>
 </body>
+<div id="reviewTemplate">
+    <div class="review-date"></div>
+    <div class="review-content">
+        <div class="review-rating"></div>
+        <div class="review-comment"></div>
+    </div>
+</div>
 </html>

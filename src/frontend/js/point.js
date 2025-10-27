@@ -231,7 +231,48 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const deleteBtn = actionsDiv.querySelector('.deleteYRBtn');
                     
                     editBtn.addEventListener('click', async () => {
-                        alert('Edit review feature not implemented yet.');
+                        const editPopup = document.getElementById('editUsrReview');
+                        editPopup.style.display = 'block';
+
+                        const ratingInput = document.getElementById('currenteditRating');
+                        const commentInput = document.getElementById('currenteditComment');
+
+                        const saveBtn = document.getElementById('butSubmitChangeReview');
+                        const cancelBtn = document.getElementById('butCancelChangeReview');
+                        
+                        ratingInput.value = r.rating;
+                        commentInput.value = r.review_text;
+
+                        editPopup.addEventListener('click', (e) => {
+                            if (e.target === editPopup) {
+                                editPopup.style.display = 'none';
+                            }
+                        });
+                        cancelBtn.onclick = () => {
+                            editPopup.style.display = 'none';
+                        };
+                        saveBtn.onclick = async () => {
+                            const newRating = parseInt(ratingInput.value);
+                            const newComment = commentInput.value.trim();
+
+                            const modResp = await (await fetch(`/api/review/${encodeURIComponent(r.id)}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    rating: newRating,
+                                    review_text: newComment
+                                })
+                            })).json();
+                            if (modResp.status) {
+                                editPopup.style.display = 'none';
+                                // Reload reviews
+                                renderReviews(siteId);
+                            } else {
+                                alert('Failed to update review: ' + (modResp.error || 'Unknown error'));
+                            }
+                        }
                     });
 
                     deleteBtn.addEventListener('click', async () => {

@@ -27,6 +27,25 @@
                 <div id="reviewList"></div>
             </div>
             <p><a class="back-link" href="./index.html">← Back to map</a></p>
+
+            <div id="editUsrReview" class="popup">
+                <div class="popupContent">
+                    <h3>Edit Review</h3>
+                    <div >
+                        <label for="currenteditRating"></label>
+                        <input id="currenteditRating" type="number" min="1" max="5" />
+                    </div>
+                    <div>
+                        <label for="currenteditComment"></label>
+                        <textarea id="currenteditComment"></textarea>
+                    </div>
+                    <div>
+                        <button id="butCancelChangeReview" class="btn ghost" type="button">Cancel</button>
+                        <button id="butSubmitChangeReview" class="btn primary" type="button">Save</button>
+                    </div>
+                    <p id="reviewChangeError" class="errormessage"></p>
+                </div>
+            </div>
         </div>
         <script src="./js/point.js"></script>
 </body>

@@ -213,3 +213,70 @@ input {
 #deleteYRBtn{
     color: red;
 }
+/*popup*/
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.popupContent {
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    background-color: white;
+    display: grid;
+    grid-template-rows: auto;
+    border-radius: 12px;
+    align-items: center;
+    justify-items: center;
+}
+.popup div {
+    width: 50%;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+.popup input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.popup textarea {
+    width: 80%;
+    height: 100px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+}
+#butSubmitChangeReview{
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #0b69a3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+#butCancelChangeReview{
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    color: #0b69a3;
+    border: 1px solid #0b69a3;
+    border-radius: 8px;
+    cursor: pointer;
+}

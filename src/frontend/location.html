@@ -10,7 +10,7 @@
         <div class="site-header">
         <h1><a href="./index.html">Kallbad Trip</a></h1>
         <div class="header-actions">
-            <a class="login-button" href="./login.html">Login</a>
+            <a id="butLogin" class="login-button" href=""></a>
         </div>
         </div>
 
@@ -20,7 +20,7 @@
             <div id="reviewsContainer"></div>
             <p><a class="back-link" href="./index.html">← Back to map</a></p>
         </div>
-
+        <script src="./js/point.js"></script>
         <script>
             async function renderSite() {
                 const params = new URLSearchParams(window.location.search);
@@ -37,7 +37,7 @@
                     statusEl.textContent = 'Fetching site information...';
 
                     // Fetch profile only — results/monitoring call removed because it is unreliable
-                    const profileRes = await fetch(`http://localhost:3000/api/bathing-waters/${encodeURIComponent(id)}/profile`).catch(e => ({ ok:false, json: async ()=> ({ success:false, error: e }) }));
+                    const profileRes = await fetch(`/api/bathing-waters/${encodeURIComponent(id)}/profile`).catch(e => ({ ok:false, json: async ()=> ({ success:false, error: e }) }));
                     const profileJson = profileRes && profileRes.ok ? await profileRes.json() : { success: false };
 
                     // If profile succeeded
@@ -96,7 +96,7 @@
                     console.warn('Profile endpoint failed or returned no data:', profileJson);
                     statusEl.textContent = 'Detailed profile unavailable — trying to fetch basic information...';
 
-                    const listRes = await fetch('http://localhost:3000/api/bathing-waters?limit=5000&page=1');
+                    const listRes = await fetch('/api/bathing-waters?limit=5000&page=1');
                     const listJson = await listRes.json();
                     const found = (listJson.data || []).find(s => s.id === id);
 
@@ -115,26 +115,7 @@
                         `;
 
                         // Wire favorite button for fallback card and render reviews
-                        (function(){
-                            const favBtn = document.getElementById('favBtn');
-                            if(!favBtn) return;
-                            function getFavs(){ try { return JSON.parse(localStorage.getItem('kallbad_favs')||'[]'); } catch(e){ return []; } }
-                            function saveFavs(a){ localStorage.setItem('kallbad_favs', JSON.stringify(a)); }
-                            function isFav(id){ return getFavs().some(s=>s.id === id); }
-                            function update(){ favBtn.textContent = isFav(found.id)?'Remove favorite':'Add to favorites'; favBtn.classList.toggle('removing', isFav(found.id)); }
-                            favBtn.addEventListener('click', ()=>{
-                                const favs = getFavs();
-                                if(isFav(found.id)){
-                                    saveFavs(favs.filter(s=>s.id !== found.id));
-                                } else {
-                                    const item = { id: found.id, name: found.name || '', coordinates: found.coordinates || null };
-                                    favs.unshift(item);
-                                    saveFavs(favs);
-                                }
-                                update();
-                            });
-                            update();
-                        })();
+                       
 
                         // After rendering basic info, also render reviews section placeholder
                         renderReviews(id);
@@ -158,7 +139,7 @@
                 const container = document.getElementById('reviewsContainer');
                 container.innerHTML = `<div class="card"><h3>Reviews</h3><p class="muted">Loading reviews...</p></div>`;
                 try{
-                            const res = await fetch(`http://localhost:3000/api/locations/${encodeURIComponent(siteId)}/reviews`);
+                            const res = await fetch(`/api/locations/${encodeURIComponent(siteId)}/reviews`);
                             const json = await res.json();
                             let reviews = json.data || [];
 
